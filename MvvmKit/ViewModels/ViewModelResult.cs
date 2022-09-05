@@ -2,7 +2,7 @@ using MvvmKit.Abstractions.ViewModels;
 
 namespace MvvmKit.ViewModels;
 
-public abstract class MvkViewModelResult<TResult> : MvkViewModel, IMvkViewModelResult<TResult>
+public abstract class ViewModelResult<TResult> : ViewModel, IViewModelResult<TResult>
 	where TResult : notnull
 {
 	public TaskCompletionSource<object?>? CloseCompletionSource { get; set; }

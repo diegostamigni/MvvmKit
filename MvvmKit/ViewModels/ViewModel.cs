@@ -2,7 +2,7 @@
 
 namespace MvvmKit.ViewModels;
 
-public abstract class MvkViewModel : IMvkViewModel
+public abstract class ViewModel : IViewModel
 {
 	public virtual void ViewCreated()
 	{
@@ -35,14 +35,14 @@ public abstract class MvkViewModel : IMvkViewModel
 	public virtual Task InitializeAsync() => Task.FromResult(true);
 }
 
-public abstract class MvkViewModel<TParameter> : MvkViewModel, IMvkViewModel<TParameter>
+public abstract class ViewModel<TParameter> : ViewModel, IViewModel<TParameter>
 	where TParameter : notnull
 {
 	public abstract void Prepare(TParameter parameter);
 }
 
-public abstract class MvkViewModel<TParameter, TResult> : MvkViewModelResult<TResult>,
-	IMvkViewModel<TParameter, TResult>
+public abstract class ViewModel<TParameter, TResult> : ViewModelResult<TResult>,
+	IViewModel<TParameter, TResult>
 	where TParameter : notnull
 	where TResult : notnull
 {

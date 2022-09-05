@@ -1,6 +1,6 @@
 ﻿namespace MvvmKit.Abstractions.ViewModels;
 
-public interface IMvkViewModel
+public interface IViewModel
 {
 	void ViewCreated();
 
@@ -19,11 +19,11 @@ public interface IMvkViewModel
 	Task InitializeAsync();
 }
 
-public interface IMvkViewModel<in TParameter> : IMvkViewModel
+public interface IViewModel<in TParameter> : IViewModel
 {
 	void Prepare(TParameter parameter);
 }
 
-public interface IMvkViewModel<in TParameter, TResult> : IMvkViewModel<TParameter>, IMvkViewModelResult<TResult>
+public interface IViewModel<in TParameter, TResult> : IViewModel<TParameter>, IViewModelResult<TResult>
 {
 }

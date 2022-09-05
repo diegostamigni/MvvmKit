@@ -1,6 +1,6 @@
 namespace MvvmKit.Abstractions.ViewModels;
 
-public interface IMvkViewModelResult<TResult> : IMvkViewModel
+public interface IViewModelResult<TResult> : IViewModel
 {
 	TaskCompletionSource<object?>? CloseCompletionSource { get; set; }
 }
