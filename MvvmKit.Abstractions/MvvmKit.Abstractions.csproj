@@ -7,8 +7,4 @@
         <AnalysisLevel>latest-Recommended</AnalysisLevel>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\MvvmKit.Abstractions\MvvmKit.Abstractions.csproj" />
-    </ItemGroup>
-
 </Project>
