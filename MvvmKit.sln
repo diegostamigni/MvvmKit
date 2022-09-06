@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmKit.Abstractions", "MvvmKit.Abstractions\MvvmKit.Abstractions.csproj", "{F649605A-AFBF-4659-A8EF-096BA3C298E4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmKit.Enums", "MvvmKit.Enums\MvvmKit.Enums.csproj", "{73A17D80-6151-427C-96F9-775D8BD6EF9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmKit.Platforms.Ios.Abstractions", "MvvmKit.Platforms.Ios.Abstractions\MvvmKit.Platforms.Ios.Abstractions.csproj", "{5285DFB0-77E6-48F8-A860-EBB696B13E33}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,5 +38,9 @@ Global
 		{73A17D80-6151-427C-96F9-775D8BD6EF9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73A17D80-6151-427C-96F9-775D8BD6EF9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73A17D80-6151-427C-96F9-775D8BD6EF9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5285DFB0-77E6-48F8-A860-EBB696B13E33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5285DFB0-77E6-48F8-A860-EBB696B13E33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5285DFB0-77E6-48F8-A860-EBB696B13E33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5285DFB0-77E6-48F8-A860-EBB696B13E33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
