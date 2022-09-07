@@ -25,5 +25,5 @@ public class ViewModelRequest<TViewModel> : ViewModelRequest where TViewModel : 
 	{
 	}
 
-	public static ViewModelRequest GetDefaultRequest() => GetDefaultRequest(typeof(TViewModel));
+	public ViewModelRequest GetDefaultRequest() => GetDefaultRequest(typeof(TViewModel));
 }

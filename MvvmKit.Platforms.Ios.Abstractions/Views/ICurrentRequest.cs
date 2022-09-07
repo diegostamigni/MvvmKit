@@ -4,5 +4,5 @@ namespace MvvmKit.Platforms.Ios.Abstractions.Views;
 
 public interface ICurrentRequest
 {
-	ViewModelRequest CurrentRequest { get; }
+	ViewModelRequest? CurrentRequest { get; }
 }

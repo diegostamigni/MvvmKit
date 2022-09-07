@@ -9,15 +9,11 @@ namespace MvvmKit.Platforms.Ios.Core;
 
 public abstract class IosSetup : Setup, IIosSetup
 {
-	public override ContainerBuilder SetupContainer()
+	public override void ConfigureContainer(ContainerBuilder containerBuilder)
 	{
-		var containerBuilder = base.SetupContainer();
-
 		containerBuilder.RegisterType<IosViewPresenter>().AsImplementedInterfaces();
 		containerBuilder.RegisterType<IosUIThreadDispatcher>().AsImplementedInterfaces();
 		containerBuilder.RegisterType<IosViewDispatcher>().AsImplementedInterfaces();
 		containerBuilder.RegisterType<IosViewsContainer>().AsImplementedInterfaces();
-
-		return containerBuilder;
 	}
 }

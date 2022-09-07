@@ -4,7 +4,7 @@ namespace MvvmKit.Abstractions.Core;
 
 public interface ISetup
 {
-	ContainerBuilder SetupContainer();
+	void ConfigureContainer(ContainerBuilder containerBuilder);
 
-	IContainer BuildContainer();
+	IContainer BuildContainer(ContainerBuilder containerBuilder);
 }

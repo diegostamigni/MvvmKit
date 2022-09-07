@@ -1,15 +1,15 @@
 using Autofac;
+using MvvmKit.Abstractions.Core;
 using MvvmKit.Abstractions.Navigation;
 using MvvmKit.Abstractions.ViewModels;
 using MvvmKit.Platforms.Ios.Abstractions.Core;
 
 namespace MvvmKit.Platforms.Ios.Core;
 
-public abstract class ApplicationDelegate<TSetup> : UIApplicationDelegate, IApplicationDelegate
+public abstract class ApplicationDelegate<TApp, TSetup> : UIApplicationDelegate, IApplicationDelegate
+	where TApp : IApplication, new()
 	where TSetup : IIosSetup, new()
 {
-	protected TSetup Setup { get; } = new();
-
 	protected IContainer Container { get; private set; } = null!;
 
 	public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
@@ -27,19 +27,33 @@ public abstract class ApplicationDelegate<TSetup> : UIApplicationDelegate, IAppl
 
 	protected virtual Task ConfigureSetupAsync()
 	{
-		this.Container = this.Setup.BuildContainer();
+		var application = new TApp();
+
+		var containerBuilder = application.GetContainerBuilder();
+
+		application.ConfigureContainer(containerBuilder);
+
+		var setup = new TSetup();
+
+		setup.ConfigureContainer(containerBuilder);
+
+		this.Container = setup.BuildContainer(containerBuilder);
 
 		return Task.CompletedTask;
 	}
 }
 
-public abstract class ApplicationDelegate<TSetup, TMainViewModel> : ApplicationDelegate<TSetup>
-	where TSetup : IIosSetup<TMainViewModel>, new()
+public abstract class ApplicationDelegate<TApp, TSetup, TMainViewModel> : ApplicationDelegate<TApp, TSetup>
+	where TApp : IApplication, new()
+	where TSetup : IIosSetup, new()
 	where TMainViewModel : IViewModel
 {
 	protected override async Task ConfigureSetupAsync()
 	{
+		await base.ConfigureSetupAsync();
+
 		var navigationService = this.Container.Resolve<INavigationService>();
+
 		await navigationService.NavigateAsync<TMainViewModel>();
 	}
 }
