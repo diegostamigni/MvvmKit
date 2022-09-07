@@ -1,10 +1,10 @@
-using MvvmKit.Extensions.DependencyInjection.Abstractions;
+using Autofac;
 
 namespace MvvmKit.Abstractions.Core;
 
 public interface ISetup
 {
-	IContainer CreateContainer();
+	ContainerBuilder SetupContainer();
 
-	void SetupContainer(IContainer container);
+	IContainer BuildContainer();
 }

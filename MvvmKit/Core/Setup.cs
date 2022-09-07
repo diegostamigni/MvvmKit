@@ -1,14 +1,19 @@
+using Autofac;
 using MvvmKit.Abstractions.Core;
-using MvvmKit.Extensions.DependencyInjection.Abstractions;
+using MvvmKit.Abstractions.Navigation;
+using MvvmKit.Navigation;
 
 namespace MvvmKit.Core;
 
 public abstract class Setup : ISetup
 {
-	public abstract IContainer CreateContainer();
-
-	public void SetupContainer(IContainer container)
+	public virtual ContainerBuilder SetupContainer()
 	{
-		throw new NotImplementedException();
+		var containerBuilder = new ContainerBuilder();
+		containerBuilder.RegisterType<NavigationService>().As<INavigationService>();
+
+		return containerBuilder;
 	}
+
+	public IContainer BuildContainer() => SetupContainer().Build();
 }

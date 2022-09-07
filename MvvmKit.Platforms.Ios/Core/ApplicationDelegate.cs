@@ -1,6 +1,6 @@
+using Autofac;
 using MvvmKit.Abstractions.Navigation;
 using MvvmKit.Abstractions.ViewModels;
-using MvvmKit.Extensions.DependencyInjection.Abstractions;
 using MvvmKit.Platforms.Ios.Abstractions.Core;
 
 namespace MvvmKit.Platforms.Ios.Core;
@@ -27,7 +27,7 @@ public abstract class ApplicationDelegate<TSetup> : UIApplicationDelegate, IAppl
 
 	protected virtual Task ConfigureSetupAsync()
 	{
-		this.Container = this.Setup.CreateContainer();
+		this.Container = this.Setup.BuildContainer();
 
 		return Task.CompletedTask;
 	}
