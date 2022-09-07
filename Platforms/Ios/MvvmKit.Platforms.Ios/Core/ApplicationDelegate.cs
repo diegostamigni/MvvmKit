@@ -19,7 +19,7 @@ public abstract class ApplicationDelegate<TApp, TSetup> : UIApplicationDelegate,
 
 		base.FinishedLaunching(application, launchOptions);
 
-		this.Window ??= new();
+		this.Window ??= new(UIScreen.MainScreen.Bounds);
 		this.Window.MakeKeyAndVisible();
 
 		return true;

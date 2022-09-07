@@ -10,7 +10,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MvvmKit.Abstractions\MvvmKit.Abstractions.csproj" />
+      <ProjectReference Include="..\MvvmKit.Platforms.Ios.Abstractions\MvvmKit.Platforms.Ios.Abstractions.csproj" />
+      <ProjectReference Include="..\..\..\MvvmKit\MvvmKit.csproj" />
     </ItemGroup>
 
 </Project>
