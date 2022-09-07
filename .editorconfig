@@ -146,6 +146,9 @@ indent_size = tab
 tab_width = 4
 dotnet_diagnostic.CA1010.severity = none
 
+[**[Tt]ests.cs]
+dotnet_diagnostic.CA1707.severity = none
+
 [*.{appxmanifest,asax,ascx,aspx,axaml,build,cshtml,dtd,fs,fsi,fsscript,fsx,master,ml,mli,nuspec,paml,razor,resw,resx,skin,vb,xaml,xamlx,xoml,xsd}]
 indent_style = space
 indent_size = 4

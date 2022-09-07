@@ -13,6 +13,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmKit.Enums", "MvvmKit.En
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmKit.Platforms.Ios.Abstractions", "MvvmKit.Platforms.Ios.Abstractions\MvvmKit.Platforms.Ios.Abstractions.csproj", "{5285DFB0-77E6-48F8-A860-EBB696B13E33}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmKit.Extensions.DependencyInjection.Abstractions", "MvvmKit.Extensions.DependencyInjection.Abstractions\MvvmKit.Extensions.DependencyInjection.Abstractions.csproj", "{15F23C3D-A841-433B-B7E4-054A984D69BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmKit.Extensions.DependencyInjection.Autofac", "MvvmKit.Extensions.DependencyInjection.Autofac\MvvmKit.Extensions.DependencyInjection.Autofac.csproj", "{FDE21012-1936-4331-A114-E1A54C78E464}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmKit.Extensions.DependencyInjection.Autofac.Tests", "MvvmKit.Extensions.DependencyInjection.Autofac.Tests\MvvmKit.Extensions.DependencyInjection.Autofac.Tests.csproj", "{C8D27757-16AE-4D2C-A251-EF40C3B01AF8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +48,17 @@ Global
 		{5285DFB0-77E6-48F8-A860-EBB696B13E33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5285DFB0-77E6-48F8-A860-EBB696B13E33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5285DFB0-77E6-48F8-A860-EBB696B13E33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15F23C3D-A841-433B-B7E4-054A984D69BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15F23C3D-A841-433B-B7E4-054A984D69BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15F23C3D-A841-433B-B7E4-054A984D69BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15F23C3D-A841-433B-B7E4-054A984D69BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDE21012-1936-4331-A114-E1A54C78E464}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDE21012-1936-4331-A114-E1A54C78E464}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDE21012-1936-4331-A114-E1A54C78E464}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDE21012-1936-4331-A114-E1A54C78E464}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8D27757-16AE-4D2C-A251-EF40C3B01AF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8D27757-16AE-4D2C-A251-EF40C3B01AF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8D27757-16AE-4D2C-A251-EF40C3B01AF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8D27757-16AE-4D2C-A251-EF40C3B01AF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
