@@ -5,10 +5,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AnalysisLevel>latest-Recommended</AnalysisLevel>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\MvvmKit.Enums\MvvmKit.Enums.csproj" />
+      <ProjectReference Include="..\MvvmKit.Extensions.DependencyInjection.Abstractions\MvvmKit.Extensions.DependencyInjection.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>
