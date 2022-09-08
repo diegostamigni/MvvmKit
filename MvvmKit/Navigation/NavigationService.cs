@@ -1,11 +1,30 @@
 using System.Reflection;
 using MvvmKit.Abstractions.Navigation;
+using MvvmKit.Abstractions.View;
 using MvvmKit.Abstractions.ViewModels;
+using MvvmKit.Enums.Navigation;
+using MvvmKit.ViewModels;
 
 namespace MvvmKit.Navigation;
 
 public class NavigationService : INavigationService
 {
+	private readonly IViewDispatcher viewDispatcher;
+
+	private readonly IViewModelLoader viewModelLoader;
+
+	private readonly IViewsContainer viewsContainer;
+
+	public NavigationService(
+		IViewModelLoader viewModelLoader,
+		IViewDispatcher viewDispatcher,
+		IViewsContainer viewsContainer)
+	{
+		this.viewModelLoader = viewModelLoader;
+		this.viewDispatcher = viewDispatcher;
+		this.viewsContainer = viewsContainer;
+	}
+
 	public event EventHandler<NavigateArgs>? WillNavigate;
 
 	public event EventHandler<NavigateArgs>? DidNavigate;
@@ -49,7 +68,11 @@ public class NavigationService : INavigationService
 
 	public Task<bool> NavigateAsync(Type viewModelType, CancellationToken cancellationToken = default)
 	{
-		throw new NotImplementedException();
+		var request = new ViewModelInstanceRequest(viewModelType);
+
+		request.ViewModelInstance = this.viewModelLoader.LoadViewModel(request);
+
+		return NavigateAsync(request, request.ViewModelInstance, cancellationToken);
 	}
 
 	public Task<bool> NavigateAsync<TParameter>(
@@ -69,34 +92,6 @@ public class NavigationService : INavigationService
 
 	public Task<TResult?> NavigateAsync<TParameter, TResult>(
 		Type viewModelType,
-		TParameter param,
-		CancellationToken cancellationToken = default) where TParameter : notnull where TResult : class
-	{
-		throw new NotImplementedException();
-	}
-
-	public Task<bool> NavigateAsync(string path, CancellationToken cancellationToken = default)
-	{
-		throw new NotImplementedException();
-	}
-
-	public Task<bool> NavigateAsync<TParameter>(
-		string path,
-		TParameter param,
-		CancellationToken cancellationToken = default) where TParameter : notnull
-	{
-		throw new NotImplementedException();
-	}
-
-	public Task<TResult?> NavigateAsync<TResult>(
-		string path,
-		CancellationToken cancellationToken = default) where TResult : class
-	{
-		throw new NotImplementedException();
-	}
-
-	public Task<TResult?> NavigateAsync<TParameter, TResult>(
-		string path,
 		TParameter param,
 		CancellationToken cancellationToken = default) where TParameter : notnull where TResult : class
 	{
@@ -104,10 +99,7 @@ public class NavigationService : INavigationService
 	}
 
 	public Task<bool> NavigateAsync<TViewModel>(CancellationToken cancellationToken = default)
-		where TViewModel : IViewModel
-	{
-		throw new NotImplementedException();
-	}
+		where TViewModel : IViewModel => NavigateAsync(typeof(TViewModel), cancellationToken);
 
 	public Task<bool> NavigateAsync<TViewModel, TParameter>(
 		TParameter param,
@@ -132,20 +124,11 @@ public class NavigationService : INavigationService
 		throw new NotImplementedException();
 	}
 
-	public Task<bool> CanNavigateAsync(string path)
-	{
-		throw new NotImplementedException();
-	}
+	public virtual Task<bool> CanNavigateAsync<TViewModel>() where TViewModel : IViewModel
+		=> Task.FromResult(this.viewsContainer.GetViewType(typeof(TViewModel)) != null);
 
-	public Task<bool> CanNavigateAsync<TViewModel>() where TViewModel : IViewModel
-	{
-		throw new NotImplementedException();
-	}
-
-	public Task<bool> CanNavigateAsync(Type viewModelType)
-	{
-		throw new NotImplementedException();
-	}
+	public virtual Task<bool> CanNavigateAsync(Type viewModelType)
+		=> Task.FromResult(this.viewsContainer.GetViewType(viewModelType) != null);
 
 	public Task<bool> CloseAsync(IViewModel viewModel, CancellationToken cancellationToken = default)
 	{
@@ -158,5 +141,32 @@ public class NavigationService : INavigationService
 		CancellationToken cancellationToken = default) where TResult : class
 	{
 		throw new NotImplementedException();
+	}
+
+	protected virtual async Task<bool> NavigateAsync(
+		ViewModelRequest request,
+		IViewModel viewModel,
+		CancellationToken cancellationToken = default)
+	{
+		var args = new NavigateArgs()
+		{
+			ViewModel = viewModel,
+			ViewModelRequest = request,
+			Mode = NavigationMode.Show,
+			CancellationToken = cancellationToken
+		};
+
+		this.WillNavigate?.Invoke(this, args);
+
+		if (args.Cancel == true)
+		{
+			return false;
+		}
+
+		var hasNavigated = await this.viewDispatcher.ShowViewModelAsync(request);
+
+		this.DidNavigate?.Invoke(this, args);
+
+		return hasNavigated;
 	}
 }

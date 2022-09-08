@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using MvvmKit.Abstractions.Presenters;
 using MvvmKit.Abstractions.View;
 using MvvmKit.Abstractions.ViewModels;
@@ -12,53 +13,47 @@ public class IosViewPresenter : AttributeViewPresenter, IIosViewPresenter
 {
 	private readonly IIosViewCreator viewCreator;
 
-	protected IUIApplicationDelegate ApplicationDelegate { get; }
+	private UINavigationController? masterNavigationController;
 
-	protected UIWindow Window { get; }
-
-	public UINavigationController? MasterNavigationController { get; protected set; }
+	// This will not work with scene delegates and multiple windows
+	[SuppressMessage("Performance", "CA1822:Mark members as static")]
+	private UIWindow Window => UIApplication.SharedApplication.Delegate.GetWindow();
 
 	public IosViewPresenter(
 		IViewsContainer viewsContainer,
-		IViewModelTypeFinder viewModelTypeFinder,
-		IIosViewCreator viewCreator,
-		IUIApplicationDelegate applicationDelegate,
-		UIWindow window) : base(viewsContainer, viewModelTypeFinder)
+		IIosViewCreator viewCreator) : base(viewsContainer)
 	{
 		this.viewCreator = viewCreator;
-		this.ApplicationDelegate = applicationDelegate;
-		this.Window = window;
 	}
 
 	public override BasePresentationAttribute CreatePresentationAttribute(Type viewModelType, Type viewType)
 	{
-		if (this.MasterNavigationController == null)
+		if (this.masterNavigationController == null)
 		{
-			return new RootPresentationAttribute
+			return new RootPresentationAttribute(viewModelType)
 			{
 				WrapInNavigationController = true,
-				ViewType = viewType,
-				ViewModelType = viewModelType
+				ViewType = viewType
 			};
 		}
 
-		return new ChildPresentationAttribute { ViewType = viewType, ViewModelType = viewModelType };
+		return new ChildPresentationAttribute(viewModelType) { ViewType = viewType };
 	}
 
-	public override object? CreateOverridePresentationAttributeViewInstance(Type viewType)
+	public override object CreateOverridePresentationAttributeViewInstance(Type viewType)
 		=> this.viewCreator.CreateViewOfType(viewType, null);
 
 	public override void RegisterAttributeTypes()
 	{
 		this.AttributeTypesToActionsDictionary.Register<RootPresentationAttribute>(
-			(viewType, attribute, request) =>
+			(_, attribute, request) =>
 			{
 				var viewController = (UIViewController) this.viewCreator.CreateView(request);
 				return ShowRootViewControllerAsync(viewController, attribute, request);
 			}, CloseRootViewControllerAsync);
 
 		this.AttributeTypesToActionsDictionary.Register<ChildPresentationAttribute>(
-			(viewType, attribute, request) =>
+			(_, attribute, request) =>
 			{
 				var viewController = (UIViewController) this.viewCreator.CreateView(request);
 				return ShowChildViewControllerAsync(viewController, attribute, request);
@@ -83,8 +78,8 @@ public class IosViewPresenter : AttributeViewPresenter, IIosViewPresenter
 	protected virtual Task<bool> CloseChildViewControllerAsync(IViewModel viewModel, ChildPresentationAttribute attribute)
 	{
 		// if the current root is a NavigationController, close it in the stack
-		if (this.MasterNavigationController != null &&
-		    TryCloseViewControllerInsideStack(this.MasterNavigationController, viewModel, attribute))
+		if (this.masterNavigationController != null &&
+		    TryCloseViewControllerInsideStack(this.masterNavigationController, viewModel, attribute))
 		{
 			return Task.FromResult(true);
 		}
@@ -123,9 +118,9 @@ public class IosViewPresenter : AttributeViewPresenter, IIosViewPresenter
 	{
 		if (attribute.WrapInNavigationController)
 		{
-			this.MasterNavigationController = CreateNavigationController(viewController);
+			this.masterNavigationController = CreateNavigationController(viewController);
 
-			SetWindowRootViewController(this.MasterNavigationController, attribute);
+			SetWindowRootViewController(this.masterNavigationController, attribute);
 		}
 		else
 		{
@@ -137,20 +132,20 @@ public class IosViewPresenter : AttributeViewPresenter, IIosViewPresenter
 
 	protected virtual void CloseMasterNavigationController()
 	{
-		if (this.MasterNavigationController == null)
+		if (this.masterNavigationController == null)
 		{
 			return;
 		}
 
-		if (this.MasterNavigationController.ViewControllers != null)
+		if (this.masterNavigationController.ViewControllers != null)
 		{
-			foreach (var item in this.MasterNavigationController.ViewControllers)
+			foreach (var item in this.masterNavigationController.ViewControllers)
 			{
 				item.DidMoveToParentViewController(null);
 			}
 		}
 
-		this.MasterNavigationController = null;
+		this.masterNavigationController = null;
 	}
 
 	protected virtual NavigationController CreateNavigationController(UIViewController viewController)
@@ -203,9 +198,9 @@ public class IosViewPresenter : AttributeViewPresenter, IIosViewPresenter
 		ChildPresentationAttribute attribute,
 		ViewModelRequest request)
 	{
-		if (this.MasterNavigationController != null)
+		if (this.masterNavigationController != null)
 		{
-			PushViewControllerIntoStack(this.MasterNavigationController, viewController, attribute);
+			PushViewControllerIntoStack(this.masterNavigationController, viewController, attribute);
 			return Task.FromResult(true);
 		}
 

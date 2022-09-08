@@ -5,10 +5,6 @@ namespace MvvmKit.Abstractions.Presenters;
 
 public interface IAttributeViewPresenter : IViewPresenter
 {
-	IViewModelTypeFinder? ViewModelTypeFinder { get; }
-
-	IViewsContainer? ViewsContainer { get; }
-
 	IDictionary<Type, PresentationAttributeAction>? AttributeTypesToActionsDictionary { get; }
 
 	void RegisterAttributeTypes();

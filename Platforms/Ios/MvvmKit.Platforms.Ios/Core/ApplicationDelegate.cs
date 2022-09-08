@@ -14,13 +14,11 @@ public abstract class ApplicationDelegate<TApp, TSetup> : UIApplicationDelegate,
 
 	public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
 	{
-		// TODO: Apply proper async/await
-		ConfigureSetupAsync().GetAwaiter().GetResult();
-
-		base.FinishedLaunching(application, launchOptions);
-
 		this.Window ??= new(UIScreen.MainScreen.Bounds);
 		this.Window.MakeKeyAndVisible();
+
+		// TODO: Apply proper async/await
+		ConfigureSetupAsync().GetAwaiter().GetResult();
 
 		return true;
 	}

@@ -125,54 +125,6 @@ public interface INavigationService
 		where TResult : class;
 
 	/// <summary>
-	/// Translates the provided Uri to a ViewModel request and dispatches it.
-	/// </summary>
-	/// <param name="path">URI to route</param>
-	/// <param name="cancellationToken">CancellationToken to cancel the navigation</param>
-	/// <returns>Boolean indicating successful navigation</returns>
-	Task<bool> NavigateAsync(string path, CancellationToken cancellationToken = default);
-
-	/// <summary>
-	/// Translates the provided Uri to a ViewModel request and dispatches it.
-	/// </summary>
-	/// <typeparam name="TParameter"></typeparam>
-	/// <param name="path"></param>
-	/// <param name="param"></param>
-	/// <param name="cancellationToken">CancellationToken to cancel the navigation</param>
-	/// <returns>Boolean indicating successful navigation</returns>
-	Task<bool> NavigateAsync<TParameter>(
-		string path,
-		TParameter param,
-		CancellationToken cancellationToken = default)
-		where TParameter : notnull;
-
-	/// <summary>
-	/// Translates the provided Uri to a ViewModel request and dispatches it.
-	/// </summary>
-	/// <typeparam name="TResult"></typeparam>
-	/// <param name="path"></param>
-	/// <param name="cancellationToken">CancellationToken to cancel the navigation</param>
-	/// <returns></returns>
-	Task<TResult?> NavigateAsync<TResult>(string path, CancellationToken cancellationToken = default)
-		where TResult : class;
-
-	/// <summary>
-	/// Translates the provided Uri to a ViewModel request and dispatches it.
-	/// </summary>
-	/// <typeparam name="TParameter"></typeparam>
-	/// <typeparam name="TResult"></typeparam>
-	/// <param name="path"></param>
-	/// <param name="param"></param>
-	/// <param name="cancellationToken">CancellationToken to cancel the navigation</param>
-	/// <returns></returns>
-	Task<TResult?> NavigateAsync<TParameter, TResult>(
-		string path,
-		TParameter param,
-		CancellationToken cancellationToken = default)
-		where TParameter : notnull
-		where TResult : class;
-
-	/// <summary>
 	/// Navigate to a ViewModel determined by its type
 	/// </summary>
 	/// <param name="cancellationToken">CancellationToken to cancel the navigation</param>
@@ -219,13 +171,6 @@ public interface INavigationService
 		where TViewModel : IViewModel<TParameter, TResult>
 		where TParameter : notnull
 		where TResult : class;
-
-	/// <summary>
-	/// Verifies if the provided Uri can be routed to a ViewModel request.
-	/// </summary>
-	/// <param name="path">URI to route</param>
-	/// <returns>True if the uri can be routed or false if it cannot.</returns>
-	Task<bool> CanNavigateAsync(string path);
 
 	/// <summary>
 	/// Verifies if the provided viewmodel is available

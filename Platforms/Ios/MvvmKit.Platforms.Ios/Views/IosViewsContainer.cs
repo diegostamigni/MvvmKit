@@ -26,6 +26,11 @@ public class IosViewsContainer : ViewsContainer, IIosViewsContainer
 			var view = CreateViewOfType(viewType, request);
 			view.Request = request;
 
+			if (request is ViewModelInstanceRequest viewModelInstanceRequest)
+			{
+				view.ViewModel = viewModelInstanceRequest.ViewModelInstance;
+			}
+
 			return view;
 		}
 		finally
@@ -57,6 +62,13 @@ public class IosViewsContainer : ViewsContainer, IIosViewsContainer
 		if (view == null)
 		{
 			throw new InvalidOperationException("View not loaded for " + viewType);
+		}
+
+		view.Request = request;
+
+		if (request is ViewModelInstanceRequest viewModelInstanceRequest)
+		{
+			view.ViewModel = viewModelInstanceRequest.ViewModelInstance;
 		}
 
 		return view;

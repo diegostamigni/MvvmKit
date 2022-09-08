@@ -1,7 +1,6 @@
 using Autofac;
 using MvvmKit.Abstractions.Core;
-using MvvmKit.Abstractions.Navigation;
-using MvvmKit.Navigation;
+using MvvmKit.ViewModels.DependencyInjection;
 
 namespace MvvmKit.Core;
 
@@ -11,6 +10,11 @@ public abstract class Application : IApplication
 
 	public virtual void ConfigureContainer(ContainerBuilder containerBuilder)
 	{
-		containerBuilder.RegisterType<NavigationService>().As<INavigationService>();
+		containerBuilder.RegisterAssemblyTypes(typeof(Application).Assembly)
+			.Where(x => RegistrationHelper.RegistrationSuffixes
+				.Any(y => x.Name.EndsWith(y, StringComparison.InvariantCultureIgnoreCase)))
+			.AsImplementedInterfaces();
+
+		containerBuilder.RegisterModule(new ViewModelModule(GetType()));
 	}
 }

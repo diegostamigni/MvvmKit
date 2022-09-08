@@ -6,7 +6,7 @@ namespace MvvmKit.Platforms.Ios.Abstractions.Views;
 
 public interface IIosView : IView, ICanCreateIosView
 {
-	ViewModelRequest Request { get; set; }
+	ViewModelRequest? Request { get; set; }
 }
 
 public interface IIosView<TViewModel> : IIosView, IView<TViewModel>

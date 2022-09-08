@@ -12,4 +12,8 @@ public class RootPresentationAttribute : BasePresentationAttribute
 
 	public const bool DefaultWrapInNavigationController = false;
 	public bool WrapInNavigationController { get; set; } = DefaultWrapInNavigationController;
+
+	public RootPresentationAttribute(Type viewModelType) : base(viewModelType)
+	{
+	}
 }

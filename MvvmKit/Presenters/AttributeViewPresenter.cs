@@ -7,11 +7,9 @@ namespace MvvmKit.Presenters;
 
 public abstract class AttributeViewPresenter : ViewPresenter, IAttributeViewPresenter
 {
+	private readonly IViewsContainer viewsContainer;
+
 	private IDictionary<Type, PresentationAttributeAction>? attributeTypesActionsDictionary;
-
-	public virtual IViewModelTypeFinder ViewModelTypeFinder { get; }
-
-	public virtual IViewsContainer ViewsContainer { get; }
 
 	public virtual IDictionary<Type, PresentationAttributeAction> AttributeTypesToActionsDictionary
 	{
@@ -27,12 +25,9 @@ public abstract class AttributeViewPresenter : ViewPresenter, IAttributeViewPres
 		}
 	}
 
-	protected AttributeViewPresenter(
-		IViewsContainer viewsContainer,
-		IViewModelTypeFinder viewModelTypeFinder)
+	protected AttributeViewPresenter(IViewsContainer viewsContainer)
 	{
-		this.ViewsContainer = viewsContainer;
-		this.ViewModelTypeFinder = viewModelTypeFinder;
+		this.viewsContainer = viewsContainer;
 	}
 
 	public abstract void RegisterAttributeTypes();
@@ -60,8 +55,6 @@ public abstract class AttributeViewPresenter : ViewPresenter, IAttributeViewPres
 			}
 
 			presentationAttribute.ViewType ??= viewType;
-			presentationAttribute.ViewModelType ??= request.ViewModelType;
-
 			return presentationAttribute;
 		}
 		finally
@@ -77,7 +70,7 @@ public abstract class AttributeViewPresenter : ViewPresenter, IAttributeViewPres
 			throw new InvalidOperationException("Cannot get view types for null ViewModelType");
 		}
 
-		var viewType = this.ViewsContainer.GetViewType(request.ViewModelType);
+		var viewType = this.viewsContainer.GetViewType(request.ViewModelType);
 		if (viewType == null)
 		{
 			throw new InvalidOperationException($"Could not get View Type for ViewModel Type {request.ViewModelType}");
@@ -96,8 +89,6 @@ public abstract class AttributeViewPresenter : ViewPresenter, IAttributeViewPres
 		if (attribute is BasePresentationAttribute basePresentationAttribute)
 		{
 			basePresentationAttribute.ViewType ??= viewType;
-			basePresentationAttribute.ViewModelType ??= request.ViewModelType;
-
 			return basePresentationAttribute;
 		}
 
@@ -109,7 +100,6 @@ public abstract class AttributeViewPresenter : ViewPresenter, IAttributeViewPres
 		out BasePresentationAttribute attribute)
 	{
 		var presentationAttribute = GetPresentationAttribute(request);
-		presentationAttribute.ViewModelType = request.ViewModelType;
 
 		var attributeType = presentationAttribute.GetType();
 		attribute = presentationAttribute;

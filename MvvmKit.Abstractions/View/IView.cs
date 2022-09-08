@@ -1,9 +1,8 @@
-using MvvmKit.Abstractions.Base;
 using MvvmKit.Abstractions.ViewModels;
 
 namespace MvvmKit.Abstractions.View;
 
-public interface IView : IDataConsumer
+public interface IView
 {
 	IViewModel? ViewModel { get; set; }
 }

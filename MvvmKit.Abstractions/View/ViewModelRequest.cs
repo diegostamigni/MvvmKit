@@ -8,8 +8,6 @@ public class ViewModelRequest
 
 	public IDictionary<string, string>? ParameterValues { get; set; }
 
-	public IDictionary<string, string>? PresentationValues { get; set; }
-
 	public ViewModelRequest(Type viewModelType)
 	{
 		this.ViewModelType = viewModelType;

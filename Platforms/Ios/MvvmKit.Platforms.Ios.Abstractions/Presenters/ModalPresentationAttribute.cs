@@ -18,4 +18,8 @@ public class ModalPresentationAttribute : BasePresentationAttribute
 
 	public const bool DefaultAnimated = true;
 	public bool Animated { get; set; } = DefaultAnimated;
+
+	public ModalPresentationAttribute(Type viewModelType) : base(viewModelType)
+	{
+	}
 }
