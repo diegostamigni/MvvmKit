@@ -125,10 +125,10 @@ public class NavigationService : INavigationService
 	}
 
 	public virtual Task<bool> CanNavigateAsync<TViewModel>() where TViewModel : IViewModel
-		=> Task.FromResult(this.viewsContainer.GetViewType(typeof(TViewModel)) != null);
+		=> Task.FromResult(this.viewsContainer.GetViewType(typeof(TViewModel)) is not null);
 
 	public virtual Task<bool> CanNavigateAsync(Type viewModelType)
-		=> Task.FromResult(this.viewsContainer.GetViewType(viewModelType) != null);
+		=> Task.FromResult(this.viewsContainer.GetViewType(viewModelType) is not null);
 
 	public Task<bool> CloseAsync(IViewModel viewModel, CancellationToken cancellationToken = default)
 	{

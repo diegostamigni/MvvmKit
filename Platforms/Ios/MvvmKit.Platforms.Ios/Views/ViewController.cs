@@ -51,7 +51,7 @@ public abstract class ViewController<TViewModel> : UIViewController, IIosView<TV
 	{
 		base.DidMoveToParentViewController(parent);
 
-		if (parent == null)
+		if (parent is null)
 		{
 			this.ViewModel?.ViewDestroy();
 		}

@@ -28,7 +28,7 @@ public class IosViewPresenter : AttributeViewPresenter, IIosViewPresenter
 
 	public override BasePresentationAttribute CreatePresentationAttribute(Type viewModelType, Type viewType)
 	{
-		if (this.masterNavigationController == null)
+		if (this.masterNavigationController is null)
 		{
 			return new RootPresentationAttribute(viewModelType)
 			{
@@ -78,7 +78,7 @@ public class IosViewPresenter : AttributeViewPresenter, IIosViewPresenter
 	protected virtual Task<bool> CloseChildViewControllerAsync(IViewModel viewModel, ChildPresentationAttribute attribute)
 	{
 		// if the current root is a NavigationController, close it in the stack
-		if (this.masterNavigationController != null &&
+		if (this.masterNavigationController is not null &&
 		    TryCloseViewControllerInsideStack(this.masterNavigationController, viewModel, attribute))
 		{
 			return Task.FromResult(true);
@@ -103,7 +103,7 @@ public class IosViewPresenter : AttributeViewPresenter, IIosViewPresenter
 		// loop through stack
 		var controllers = navController.ViewControllers?.ToList();
 		var controllerToClose = controllers?.Find(vc => vc is IIosView iView && iView.ViewModel == toClose);
-		if (controllerToClose != null)
+		if (controllerToClose is not null)
 		{
 			controllers!.Remove(controllerToClose);
 			navController.ViewControllers = controllers.ToArray();
@@ -132,12 +132,12 @@ public class IosViewPresenter : AttributeViewPresenter, IIosViewPresenter
 
 	protected virtual void CloseMasterNavigationController()
 	{
-		if (this.masterNavigationController == null)
+		if (this.masterNavigationController is null)
 		{
 			return;
 		}
 
-		if (this.masterNavigationController.ViewControllers != null)
+		if (this.masterNavigationController.ViewControllers is not null)
 		{
 			foreach (var item in this.masterNavigationController.ViewControllers)
 			{
@@ -165,7 +165,7 @@ public class IosViewPresenter : AttributeViewPresenter, IIosViewPresenter
 	{
 		RemoveWindowSubviews();
 
-		if (attribute == null || attribute.AnimationOptions == UIViewAnimationOptions.TransitionNone)
+		if (attribute is null || attribute.AnimationOptions == UIViewAnimationOptions.TransitionNone)
 		{
 			this.Window.RootViewController = controller;
 			return;
@@ -198,7 +198,7 @@ public class IosViewPresenter : AttributeViewPresenter, IIosViewPresenter
 		ChildPresentationAttribute attribute,
 		ViewModelRequest request)
 	{
-		if (this.masterNavigationController != null)
+		if (this.masterNavigationController is not null)
 		{
 			PushViewControllerIntoStack(this.masterNavigationController, viewController, attribute);
 			return Task.FromResult(true);

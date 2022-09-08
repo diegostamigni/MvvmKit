@@ -21,9 +21,9 @@ public class MainViewController : ViewController<HomeViewModel>
 
 		this.Title = $"{GetType().Name} ({this.ViewModel!.GetType().Name})";
 
-		this.NavigationItem.SetRightBarButtonItem(new(UIBarButtonSystemItem.Organize, async (_, _) =>
+		this.NavigationItem.SetRightBarButtonItem(new(UIBarButtonSystemItem.Organize, (_, _) =>
 		{
-			await this.ViewModel!.NavigateNextAsync();
+			this.ViewModel!.NavigateNextCommand.Execute();
 		}), true);
 	}
 }

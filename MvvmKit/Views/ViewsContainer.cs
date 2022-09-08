@@ -36,7 +36,7 @@ public abstract class ViewsContainer : IViewsContainer
 
 	public Type GetViewType(Type? viewModelType)
 	{
-		if (viewModelType != null && this.bindingMap.TryGetValue(viewModelType, out var binding))
+		if (viewModelType is not null && this.bindingMap.TryGetValue(viewModelType, out var binding))
 		{
 			return binding;
 		}
@@ -44,16 +44,16 @@ public abstract class ViewsContainer : IViewsContainer
 		foreach (var viewFinder in this.secondaryViewFinders)
 		{
 			binding = viewFinder.GetViewType(viewModelType);
-			if (binding != null)
+			if (binding is not null)
 			{
 				return binding;
 			}
 		}
 
-		if (this.lastResortViewFinder != null)
+		if (this.lastResortViewFinder is not null)
 		{
 			binding = this.lastResortViewFinder.GetViewType(viewModelType);
-			if (binding != null)
+			if (binding is not null)
 			{
 				return binding;
 			}

@@ -15,7 +15,7 @@ public abstract class NavigationViewModelResult<TResult> : NavigationViewModel, 
 
 	public override void ViewDestroy(bool viewFinishing = true)
 	{
-		if (viewFinishing && this.CloseCompletionSource != null &&
+		if (viewFinishing && this.CloseCompletionSource is not null &&
 		    !this.CloseCompletionSource.Task.IsCompleted &&
 		    !this.CloseCompletionSource.Task.IsFaulted)
 		{

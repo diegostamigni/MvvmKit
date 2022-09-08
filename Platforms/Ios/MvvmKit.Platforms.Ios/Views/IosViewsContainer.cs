@@ -18,7 +18,7 @@ public class IosViewsContainer : ViewsContainer, IIosViewsContainer
 			this.CurrentRequest = request;
 
 			var viewType = GetViewType(request.ViewModelType);
-			if (viewType == null)
+			if (viewType is null)
 			{
 				throw new InvalidOperationException("View Type not found for " + request.ViewModelType);
 			}
@@ -42,7 +42,7 @@ public class IosViewsContainer : ViewsContainer, IIosViewsContainer
 	public virtual IIosView CreateViewOfType(Type viewType, ViewModelRequest? request)
 	{
 		var storyboardAttribute = viewType.GetCustomAttribute<FromStoryboardAttribute>();
-		if (storyboardAttribute != null)
+		if (storyboardAttribute is not null)
 		{
 			var storyboardName = storyboardAttribute.StoryboardName ?? viewType.Name;
 			try
@@ -59,7 +59,7 @@ public class IosViewsContainer : ViewsContainer, IIosViewsContainer
 		}
 
 		var view = Activator.CreateInstance(viewType) as IIosView;
-		if (view == null)
+		if (view is null)
 		{
 			throw new InvalidOperationException("View not loaded for " + viewType);
 		}

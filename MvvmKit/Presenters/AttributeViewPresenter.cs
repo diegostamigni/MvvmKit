@@ -15,7 +15,7 @@ public abstract class AttributeViewPresenter : ViewPresenter, IAttributeViewPres
 	{
 		get
 		{
-			if (this.attributeTypesActionsDictionary == null)
+			if (this.attributeTypesActionsDictionary is null)
 			{
 				this.attributeTypesActionsDictionary = new Dictionary<Type, PresentationAttributeAction>();
 				RegisterAttributeTypes();
@@ -49,7 +49,7 @@ public abstract class AttributeViewPresenter : ViewPresenter, IAttributeViewPres
 		try
 		{
 			var presentationAttribute = viewInstance?.PresentationAttribute(request);
-			if (presentationAttribute == null)
+			if (presentationAttribute is null)
 			{
 				return null;
 			}
@@ -65,19 +65,19 @@ public abstract class AttributeViewPresenter : ViewPresenter, IAttributeViewPres
 
 	public virtual BasePresentationAttribute GetPresentationAttribute(ViewModelRequest request)
 	{
-		if (request.ViewModelType == null)
+		if (request.ViewModelType is null)
 		{
 			throw new InvalidOperationException("Cannot get view types for null ViewModelType");
 		}
 
 		var viewType = this.viewsContainer.GetViewType(request.ViewModelType);
-		if (viewType == null)
+		if (viewType is null)
 		{
 			throw new InvalidOperationException($"Could not get View Type for ViewModel Type {request.ViewModelType}");
 		}
 
 		var overrideAttribute = GetOverridePresentationAttribute(request, viewType);
-		if (overrideAttribute != null)
+		if (overrideAttribute is not null)
 		{
 			return overrideAttribute;
 		}
@@ -106,13 +106,13 @@ public abstract class AttributeViewPresenter : ViewPresenter, IAttributeViewPres
 
 		if (this.AttributeTypesToActionsDictionary.TryGetValue(attributeType, out var attributeAction))
 		{
-			if (attributeAction.ShowAction == null)
+			if (attributeAction.ShowAction is null)
 			{
 				throw new InvalidOperationException(
 					$"attributeAction.ShowAction is null for attribute: {attributeType.Name}");
 			}
 
-			if (attributeAction.CloseAction == null)
+			if (attributeAction.CloseAction is null)
 			{
 				throw new InvalidOperationException(
 					$"attributeAction.CloseAction is null for attribute: {attributeType.Name}");
@@ -133,7 +133,7 @@ public abstract class AttributeViewPresenter : ViewPresenter, IAttributeViewPres
 	{
 		var attributeAction = GetPresentationAttributeAction(request, out var attribute);
 
-		if (attributeAction.ShowAction != null && attribute.ViewType != null)
+		if (attributeAction.ShowAction is not null && attribute.ViewType is not null)
 		{
 			return attributeAction.ShowAction.Invoke(attribute.ViewType, attribute, request);
 		}
