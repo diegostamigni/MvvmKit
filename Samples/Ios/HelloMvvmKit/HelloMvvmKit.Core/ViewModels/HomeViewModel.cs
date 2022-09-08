@@ -9,4 +9,6 @@ public class HomeViewModel : NavigationViewModel
 		: base(navigationService)
 	{
 	}
+
+	public Task NavigateNextAsync() => this.NavigationService.NavigateAsync<FirstChildViewModel>();
 }

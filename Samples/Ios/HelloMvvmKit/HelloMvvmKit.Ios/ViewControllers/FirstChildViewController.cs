@@ -1,13 +1,11 @@
-using System.Diagnostics.CodeAnalysis;
 using HelloMvvmKit.Core.ViewModels;
 using MvvmKit.Platforms.Ios.Abstractions.Presenters;
 using MvvmKit.Platforms.Ios.Views;
 
 namespace HelloMvvmKit.Ios.ViewControllers;
 
-[SuppressMessage("ReSharper", "AsyncVoidLambda")]
-[RootPresentation(typeof(HomeViewModel), WrapInNavigationController = true)]
-public class MainViewController : ViewController<HomeViewModel>
+[ChildPresentation(typeof(FirstChildViewModel))]
+public class FirstChildViewController : ViewController<FirstChildViewModel>
 {
 	public override void LoadView()
 	{
@@ -20,10 +18,5 @@ public class MainViewController : ViewController<HomeViewModel>
 		base.ViewDidLoad();
 
 		this.Title = $"{GetType().Name} ({this.ViewModel!.GetType().Name})";
-
-		this.NavigationItem.SetRightBarButtonItem(new(UIBarButtonSystemItem.Organize, async (_, _) =>
-		{
-			await this.ViewModel!.NavigateNextAsync();
-		}), true);
 	}
 }
