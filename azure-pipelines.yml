@@ -46,7 +46,7 @@ stages:
         runtime: 'core'
 
 - stage: Build
-  condition: and(succeeded('Setup'))
+  condition: succeeded()
   jobs:
   - job: Build
     pool:
@@ -68,7 +68,7 @@ stages:
         arguments: '-c $(buildConfiguration) --no-restore --collect "Code coverage"'
 
 - stage: Pack
-  condition: and(succeeded('Build'), not(eq(variables['build.reason'], 'PullRequest')))
+  condition: succeeded()
   jobs:
   - job: Pack
     pool:
