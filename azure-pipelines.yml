@@ -1,32 +1,86 @@
 trigger:
-- main
+  branches:
+    include:
+    - main
+    - development
+    - releases/*
+  paths:
+    exclude:
+    - '**/*.md'
+    - docs/*
+pr:
+  branches:
+    include:
+    - main
+    - development
+    - releases/*
+  paths:
+    exclude:
+    - '**/*.md'
+    - docs/*
 
-pool:
-  vmImage: 'macOS-latest'
+stages:
+- stage: Setup
 
-variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  jobs:
+  - job: Setup
+    pool:
+      vmImage: '$(vmImage)'
 
-steps:
-- task: DotNetCoreCLI@2
-  displayName: 'Install required workloads'
-  inputs:
-    command: 'custom'
-    custom: 'workload'
-    arguments: 'install ios --source https://api.nuget.org/v3/index.json'
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: 'Install required workloads'
+      inputs:
+        command: 'custom'
+        custom: 'workload'
+        arguments: 'install ios'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Build'
-  inputs:
-    command: 'build'
-    projects: '**/*.csproj'
-    arguments: '-c $(buildConfiguration)'
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: |
+          sudo xcode-select -s /Applications/Xcode_$(xcodeVersion).app
 
-- task: DotNetCoreCLI@2
-  displayName: 'Test'
-  inputs:
-    command: 'test'
-    projects: '**/[Tt]est*.csproj'
-    arguments: '-c $(buildConfiguration) --no-restore'
+    - task: GitVersion@5
+      inputs:
+        runtime: 'core'
+
+- stage: Build
+  condition: and(succeeded('Setup'))
+  jobs:
+  - job: Build
+    pool:
+      vmImage: '$(vmImage)'
+
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: 'Build'
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '-c $(buildConfiguration) -p:Version=$(GitVersion.NuGetVersion)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Test'
+      inputs:
+        command: 'test'
+        projects: '**/[Tt]est*.csproj'
+        arguments: '-c $(buildConfiguration) --no-restore --collect "Code coverage"'
+
+- stage: Pack
+  condition: and(succeeded('Build'), not(eq(variables['build.reason'], 'PullRequest')))
+  jobs:
+  - job: Pack
+    pool:
+      vmImage: '$(vmImage)'
+
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: "Nuget pack"
+      inputs:
+        command: "pack"
+        packagesToPack: "**/*.csproj"
+        nobuild: true
+        packDirectory: "$(Build.ArtifactStagingDirectory)"
+        versioningScheme: byEnvVar
+        versionEnvVar: "GitVersion.NuGetVersion"
