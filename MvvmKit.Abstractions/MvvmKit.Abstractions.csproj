@@ -9,6 +9,14 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <PackageId>MvvmKit.Abstractions</PackageId>
+        <Version>0.0.1</Version>
+        <Authors>Diego Stamigni</Authors>
+        <Company>Area Engineering Ltd</Company>
+        <PackageTags>mvvm;mvvmkit</PackageTags>
+    </PropertyGroup>
+
     <ItemGroup>
       <ProjectReference Include="..\MvvmKit.Enums\MvvmKit.Enums.csproj" />
     </ItemGroup>

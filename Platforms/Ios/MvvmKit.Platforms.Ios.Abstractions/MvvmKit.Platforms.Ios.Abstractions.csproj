@@ -7,6 +7,15 @@
         <AnalysisLevel>latest-Recommended</AnalysisLevel>
         <LangVersion>latest</LangVersion>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <SupportedOSPlatformVersion>15.4</SupportedOSPlatformVersion>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageId>MvvmKit.Platforms.Ios.Abstractions</PackageId>
+        <Version>0.0.1</Version>
+        <Authors>Diego Stamigni</Authors>
+        <Company>Area Engineering Ltd</Company>
+        <PackageTags>mvvm;mvvmkit</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
