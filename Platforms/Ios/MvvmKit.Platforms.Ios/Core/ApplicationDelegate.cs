@@ -2,13 +2,14 @@ using Autofac;
 using MvvmKit.Abstractions.Core;
 using MvvmKit.Abstractions.Navigation;
 using MvvmKit.Abstractions.ViewModels;
+using MvvmKit.Core;
 using MvvmKit.Platforms.Ios.Abstractions.Core;
 
 namespace MvvmKit.Platforms.Ios.Core;
 
 public abstract class ApplicationDelegate<TApp, TSetup> : UIApplicationDelegate, IApplicationDelegate
-	where TApp : IApplication, new()
-	where TSetup : IIosSetup, new()
+	where TApp : Application, new()
+	where TSetup : IosSetup, new()
 {
 	protected IContainer Container { get; private set; } = null!;
 
@@ -42,8 +43,8 @@ public abstract class ApplicationDelegate<TApp, TSetup> : UIApplicationDelegate,
 }
 
 public abstract class ApplicationDelegate<TApp, TSetup, TMainViewModel> : ApplicationDelegate<TApp, TSetup>
-	where TApp : IApplication, new()
-	where TSetup : IIosSetup, new()
+	where TApp : Application, new()
+	where TSetup : IosSetup, new()
 	where TMainViewModel : IViewModel
 {
 	protected override async Task ConfigureSetupAsync()

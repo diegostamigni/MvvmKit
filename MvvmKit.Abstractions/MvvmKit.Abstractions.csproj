@@ -13,8 +13,4 @@
       <ProjectReference Include="..\MvvmKit.Enums\MvvmKit.Enums.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="Autofac" Version="6.4.0" />
-    </ItemGroup>
-
 </Project>
