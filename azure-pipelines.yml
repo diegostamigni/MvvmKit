@@ -22,64 +22,49 @@ pr:
 pool:
   vmImage: '$(vmImage)'
 
-stages:
-- stage: Setup
-  jobs:
-  - job: Setup
-    steps:
-    - task: DotNetCoreCLI@2
-      displayName: 'Install required workloads'
-      inputs:
-        command: 'custom'
-        custom: 'workload'
-        arguments: 'install ios'
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'Install required workloads'
+  inputs:
+    command: 'custom'
+    custom: 'workload'
+    arguments: 'install ios'
 
-    - task: Bash@3
-      displayName: Set Xcode version to $(xcodeVersion)
-      inputs:
-        targetType: 'inline'
-        script: |
-          sudo xcode-select -s /Applications/Xcode_$(xcodeVersion).app
+- task: Bash@3
+  displayName: Set Xcode version to $(xcodeVersion)
+  inputs:
+    targetType: 'inline'
+    script: |
+      sudo xcode-select -s /Applications/Xcode_$(xcodeVersion).app
 
-    - task: gitversion/setup@0
-      displayName: 'Setup GitVersion'
-      inputs:
-       versionSpec: '5.x'
+- task: gitversion/setup@0
+  displayName: 'Setup GitVersion'
+  inputs:
+    versionSpec: '5.x'
 
-- stage: Build
-  dependsOn: Setup
-  jobs:
-  - job: Build
-    steps:
-    - task: gitversion/execute@0
-      displayName: 'Execute GitVersion'
+- task: gitversion/execute@0
+  displayName: 'Execute GitVersion'
 
-    - task: DotNetCoreCLI@2
-      displayName: 'Build'
-      inputs:
-        command: 'build'
-        projects: '**/*.csproj'
-        arguments: '-c $(buildConfiguration) -p:Version=$(GitVersion.NuGetVersion)'
+- task: DotNetCoreCLI@2
+  displayName: 'Build'
+  inputs:
+    command: 'build'
+    projects: '**/*.csproj'
+    arguments: '-c $(buildConfiguration) -p:Version=$(GitVersion.NuGetVersion)'
 
-    - task: DotNetCoreCLI@2
-      displayName: 'Test'
-      inputs:
-        command: 'test'
-        projects: '**/[Tt]est*.csproj'
-        arguments: '-c $(buildConfiguration) --no-restore --collect "Code coverage"'
+- task: DotNetCoreCLI@2
+  displayName: 'Test'
+  inputs:
+    command: 'test'
+    projects: '**/[Tt]est*.csproj'
+    arguments: '-c $(buildConfiguration) --no-restore --collect "Code coverage"'
 
-- stage: Pack
-  dependsOn: Build
-  condition: succeeded()
-  jobs:
-  - job: Pack
-    steps:
-    - task: DotNetCoreCLI@2
-      displayName: "Nuget pack"
-      inputs:
-        command: "pack"
-        packagesToPack: "**/*.csproj"
-        nobuild: true
-        packDirectory: "$(Build.ArtifactStagingDirectory)"
-        versioningScheme: byEnvVar
-        versionEnvVar: "GitVersion.NuGetVersion"
+- task: DotNetCoreCLI@2
+  displayName: "Nuget pack"
+  inputs:
+    command: "pack"
+    packagesToPack: "**/*.csproj"
+    nobuild: true
+    packDirectory: "$(Build.ArtifactStagingDirectory)"
+    versioningScheme: byEnvVar
+    versionEnvVar: "GitVersion.NuGetVersion"
