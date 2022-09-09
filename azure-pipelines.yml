@@ -48,7 +48,6 @@ stages:
        versionSpec: '5.x'
 
 - stage: Build
-  condition: and(succeeded('Setup'))
   jobs:
   - job: Build
     pool:
