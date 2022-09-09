@@ -19,14 +19,13 @@ pr:
     - '**/*.md'
     - docs/*
 
+pool:
+  vmImage: '$(vmImage)'
+
 stages:
 - stage: Setup
-
   jobs:
   - job: Setup
-    pool:
-      vmImage: '$(vmImage)'
-
     steps:
     - task: DotNetCoreCLI@2
       displayName: 'Install required workloads'
@@ -48,11 +47,9 @@ stages:
        versionSpec: '5.x'
 
 - stage: Build
+  dependsOn: Setup
   jobs:
   - job: Build
-    pool:
-      vmImage: '$(vmImage)'
-
     steps:
     - task: gitversion/execute@0
       displayName: 'Execute GitVersion'
@@ -72,12 +69,10 @@ stages:
         arguments: '-c $(buildConfiguration) --no-restore --collect "Code coverage"'
 
 - stage: Pack
+  dependsOn: Build
   condition: and(succeeded('Build'), not(eq(variables['build.reason'], 'PullRequest')))
   jobs:
   - job: Pack
-    pool:
-      vmImage: '$(vmImage)'
-
     steps:
     - task: DotNetCoreCLI@2
       displayName: "Nuget pack"
