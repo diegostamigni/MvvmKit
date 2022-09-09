@@ -36,14 +36,16 @@ stages:
         arguments: 'install ios'
 
     - task: Bash@3
+      displayName: Set Xcode version to $(xcodeVersion)
       inputs:
         targetType: 'inline'
         script: |
           sudo xcode-select -s /Applications/Xcode_$(xcodeVersion).app
 
-    - task: GitVersion@5
+    - task: gitversion/setup@0
+      displayName: 'Setup GitVersion'
       inputs:
-        runtime: 'core'
+       versionSpec: '5.x'
 
 - stage: Build
   condition: and(succeeded('Setup'))
@@ -53,6 +55,9 @@ stages:
       vmImage: '$(vmImage)'
 
     steps:
+    - task: gitversion/execute@0
+      displayName: 'Execute GitVersion'
+
     - task: DotNetCoreCLI@2
       displayName: 'Build'
       inputs:
