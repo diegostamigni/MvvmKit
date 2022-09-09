@@ -1,0 +1,32 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'macOS-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'Install required workloads'
+  inputs:
+    command: 'custom'
+    custom: 'workload'
+    arguments: 'install ios --source https://api.nuget.org/v3/index.json'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build'
+  inputs:
+    command: 'build'
+    projects: '**/*.csproj'
+    arguments: '-c $(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Test'
+  inputs:
+    command: 'test'
+    projects: '**/[Tt]est*.csproj'
+    arguments: '-c $(buildConfiguration) --no-restore'
