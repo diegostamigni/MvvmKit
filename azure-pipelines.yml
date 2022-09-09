@@ -11,6 +11,13 @@ variables:
 
 steps:
 - task: DotNetCoreCLI@2
+  displayName: 'Install required workloads'
+  inputs:
+    command: 'custom'
+    custom: 'workload'
+    arguments: 'install ios --source https://api.nuget.org/v3/index.json'
+
+- task: DotNetCoreCLI@2
   displayName: 'Build'
   inputs:
     command: 'build'
