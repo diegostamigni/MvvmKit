@@ -5,8 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>true</ImplicitUsings>
         <SupportedOSPlatformVersion>15.4</SupportedOSPlatformVersion>
-        <AssemblyName>HelloMvvmKit.Ios</AssemblyName>
-        <RootNamespace>HelloMvvmKit.Ios</RootNamespace>
+        <IsPackable>false</IsPackable>
     </PropertyGroup>
     
     <ItemGroup>

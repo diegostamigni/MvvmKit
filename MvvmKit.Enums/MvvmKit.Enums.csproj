@@ -11,6 +11,7 @@
 
     <PropertyGroup>
         <PackageId>MvvmKit.Enums</PackageId>
+        <Description>MvvmKit.Enums</Description>
         <Version>0.0.1</Version>
         <Authors>Diego Stamigni</Authors>
         <Company>Area Engineering Ltd</Company>

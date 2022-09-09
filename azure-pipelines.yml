@@ -67,6 +67,7 @@ steps:
   inputs:
     command: 'pack'
     packagesToPack: '**/*.csproj'
+    nobuild: true
     includesymbols: true
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'GitVersion.NuGetVersion'
