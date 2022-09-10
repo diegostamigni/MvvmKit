@@ -1,6 +1,6 @@
 namespace MvvmKit.Abstractions.Presenters;
 
-public interface IPresentationAttribute
+public interface IPresentation
 {
 	/// <summary>
 	/// That shall be used only if you are using non generic views.

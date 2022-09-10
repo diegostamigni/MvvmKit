@@ -1,7 +1,7 @@
 namespace MvvmKit.Abstractions.Presenters;
 
 [AttributeUsage(AttributeTargets.Class)]
-public abstract class BasePresentationAttribute : Attribute, IPresentationAttribute
+public abstract class BasePresentationAttribute : Attribute, IPresentation
 {
 	/// <inheritdoc />
 	public Type ViewModelType { get; }

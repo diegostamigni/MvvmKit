@@ -2,7 +2,7 @@ using MvvmKit.Abstractions.View;
 
 namespace MvvmKit.Abstractions.Presenters;
 
-public interface IOverridePresentationAttribute
+public interface IOverridePresentation
 {
 	BasePresentationAttribute PresentationAttribute(ViewModelRequest request);
 }

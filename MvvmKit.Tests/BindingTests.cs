@@ -1,4 +1,6 @@
-﻿using MvvmKit.Bindings;
+﻿using MvvmKit.Abstractions.Commands;
+using MvvmKit.Bindings;
+using MvvmKit.Commands;
 using NUnit.Framework;
 using Shouldly;
 
@@ -8,9 +10,13 @@ namespace MvvmKit.Tests;
 public class BindingTests
 {
 	[Test]
-	public void Binding_Apply()
+	public void Binding_StringProperty_Apply()
 	{
-		var source = new Source("Test");
+		var source = new Source
+		{
+			Name = "Test"
+		};
+
 		var destination = new Destination();
 
 		var bindings = Binding<Source, Destination>.Create(source, destination);
@@ -21,9 +27,13 @@ public class BindingTests
 	}
 
 	[Test]
-	public void Binding_NotifyPropertyChanged()
+	public void Binding_StringProperty_NotifyPropertyChanged()
 	{
-		var source = new Source("Test");
+		var source = new Source
+		{
+			Name = "Test"
+		};
+
 		var destination = new Destination();
 
 		var bindings = Binding<Source, Destination>.Create(source, destination);
@@ -34,9 +44,13 @@ public class BindingTests
 	}
 
 	[Test]
-	public void Binding_Apply_NotifyPropertyChanged()
+	public void Binding_StringProperty_Apply_NotifyPropertyChanged()
 	{
-		var source = new Source("Test");
+		var source = new Source
+		{
+			Name = "Test"
+		};
+
 		var destination = new Destination();
 
 		var bindings = Binding<Source, Destination>.Create(source, destination);
@@ -47,6 +61,25 @@ public class BindingTests
 		destination.Name.ShouldBe("Update");
 	}
 
+	[Test]
+	public void Binding_ICommand_Apply_NotifyPropertyChanged()
+	{
+		var source = new Source();
+		source.Command = new Command(() =>
+		{
+			source.Name = "UpdateFromCommand";
+		});
+
+		var destination = new Destination();
+
+		var bindings = Binding<Source, Destination>.Create(source, destination);
+		bindings.Bind(vm => vm.Command, v => v.Command);
+		bindings.Apply();
+
+		destination.Command?.Execute();
+		destination.Name.ShouldBe("UpdateFromCommand");
+	}
+
 	private class Source : Bindable
 	{
 		public string? Name
@@ -55,8 +88,17 @@ public class BindingTests
 			set => Set(value);
 		}
 
-		public Source(string? name = default) => this.Name = name;
+		public ICommand? Command
+		{
+			get => Get<ICommand>();
+			set => Set(value);
+		}
 	}
 
-	private record Destination(string? Name = default);
+	private class Destination
+	{
+		public string? Name { get; set; }
+
+		public ICommand? Command { get; set; }
+	}
 }

@@ -56,7 +56,7 @@ steps:
   displayName: 'Test'
   inputs:
     command: 'test'
-    projects: '**/[Tt]est*.csproj'
+    projects: '**/*.[Tt]est*.csproj'
     arguments: '-c $(buildConfiguration) --no-restore --collect "Code coverage"'
 
 - task: DotNetCoreCLI@2
