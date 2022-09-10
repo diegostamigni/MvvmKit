@@ -22,9 +22,6 @@ pr:
 pool:
   vmImage: '$(vmImage)'
 
-variables:
-  Agent.Source.Git.ShallowFetchDepth: 0
-
 steps:
 - task: DotNetCoreCLI@2
   displayName: 'Install required workloads'

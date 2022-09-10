@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloMvvmKit.Ios", "Samples
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloMvvmKit.Core", "Samples\Ios\HelloMvvmKit\HelloMvvmKit.Core\HelloMvvmKit.Core.csproj", "{1A994187-3E17-4E39-A0B2-DF45DA1F9284}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmKit.Tests", "MvvmKit.Tests\MvvmKit.Tests.csproj", "{94489ACB-2E45-4148-BCBF-86757BC1AD6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{1A994187-3E17-4E39-A0B2-DF45DA1F9284}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A994187-3E17-4E39-A0B2-DF45DA1F9284}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A994187-3E17-4E39-A0B2-DF45DA1F9284}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94489ACB-2E45-4148-BCBF-86757BC1AD6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94489ACB-2E45-4148-BCBF-86757BC1AD6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94489ACB-2E45-4148-BCBF-86757BC1AD6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94489ACB-2E45-4148-BCBF-86757BC1AD6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4109DD01-EC53-4838-9204-F5BD550CBF30} = {0A8EB160-9950-45C0-B292-FBC55E42DAD6}

@@ -36,21 +36,15 @@ public abstract class AsyncCommandBase : CommandBase
 	public bool CanExecute(object? parameter)
 		=> (this.allowConcurrentExecutions || !this.IsRunning) && CanExecuteImpl(parameter);
 
-	public async void Execute(object? parameter)
-	{
-		await ExecuteAsync(parameter, true).ConfigureAwait(false);
-	}
+	public async void Execute(object? parameter) => await ExecuteAsync(parameter, true);
 
-	public void Execute()
-	{
-		Execute(null);
-	}
+	public void Execute() => Execute(null);
 
 	protected async Task ExecuteAsync(object? parameter, bool hideCanceledException)
 	{
 		if (CanExecuteImpl(parameter))
 		{
-			await ExecuteConcurrentAsync(parameter, hideCanceledException).ConfigureAwait(false);
+			await ExecuteConcurrentAsync(parameter, hideCanceledException);
 		}
 	}
 
@@ -79,7 +73,7 @@ public abstract class AsyncCommandBase : CommandBase
 				{
 					// With configure await false, the CanExecuteChanged raised in finally clause might run in another thread.
 					// This should not be an issue as long as ShouldAlwaysRaiseCECOnUserInterfaceThread is true.
-					await ExecuteAsyncImpl(parameter).ConfigureAwait(false);
+					await ExecuteAsyncImpl(parameter);
 				}
 				catch (OperationCanceledException e)
 				{
