@@ -27,7 +27,8 @@ public class Binding<TSource, TDestination> where TSource : INotifyPropertyChang
 		Expression<Func<TDestination, TProperty>> viewProperty)
 	{
 		var weakThis = new WeakReference<Binding<TSource, TDestination>>(this);
-		this.mappings.Add(GetKey<TProperty>(viewModelProperty), () =>
+		var key = GetKey(viewModelProperty);
+		this.mappings.Add(key, () =>
 		{
 			if (!weakThis.TryGetTarget(out var unwrappedWeakThis))
 			{
@@ -35,7 +36,7 @@ public class Binding<TSource, TDestination> where TSource : INotifyPropertyChang
 			}
 
 			var target = viewModelProperty.Compile().Invoke(unwrappedWeakThis.source);
-			var body = Expression.Assign(viewProperty.Body, Expression.Constant(target));
+			var body = Expression.Assign(viewProperty.Body, Expression.Constant(target, target?.GetType() ?? typeof(TProperty)));
 			var lambda = Expression.Lambda<Action<TDestination>>(body, viewProperty.Parameters);
 			var action = lambda.Compile();
 			action.Invoke(unwrappedWeakThis.destination);

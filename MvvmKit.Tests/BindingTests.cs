@@ -73,6 +73,7 @@ public class BindingTests
 		var destination = new Destination();
 
 		var bindings = Binding<Source, Destination>.Create(source, destination);
+		bindings.Bind(vm => vm.Name, v => v.Name);
 		bindings.Bind(vm => vm.Command, v => v.Command);
 		bindings.Apply();
 
