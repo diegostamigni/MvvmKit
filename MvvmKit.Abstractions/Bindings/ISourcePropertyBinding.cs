@@ -1,11 +1,9 @@
-using System.ComponentModel;
 using System.Linq.Expressions;
 
 namespace MvvmKit.Abstractions.Bindings;
 
-public interface ISourcePropertyBinding<TSource, TDestination, TSourceProperty>
-	where TSource : INotifyPropertyChanged
+public interface ISourcePropertyBinding<TSource, TDestination, out TSourceProperty>
 {
-	IDestinationPropertyBinding<TSource, TDestination, TDestinationProperty> To<TDestinationProperty>(
+	IDestinationPropertyBinding<TSource, TDestination, TSourceProperty, TDestinationProperty> To<TDestinationProperty>(
 		Expression<Func<TDestination, TDestinationProperty>> destinationProperty);
 }

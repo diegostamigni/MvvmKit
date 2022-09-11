@@ -28,10 +28,10 @@ sealed internal class SourcePropertyBinding<TSource, TDestination, TSourceProper
 		this.mappings = mappings;
 	}
 
-	public IDestinationPropertyBinding<TSource, TDestination, TDestinationProperty> To<TDestinationProperty>(
+	public IDestinationPropertyBinding<TSource, TDestination, TSourceProperty, TDestinationProperty> To<TDestinationProperty>(
 		Expression<Func<TDestination, TDestinationProperty>> destinationProperty)
 	{
-		var propertyBinding = new DestinationPropertyBinding<TSource, TSourceProperty, TDestination, TDestinationProperty>(
+		var propertyBinding = new DestinationPropertyBinding<TSource, TDestination, TSourceProperty, TDestinationProperty>(
 			this.source,
 			this.destination,
 			this.sourceProperty,

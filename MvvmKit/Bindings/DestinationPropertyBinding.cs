@@ -1,11 +1,12 @@
 using System.ComponentModel;
 using System.Linq.Expressions;
 using MvvmKit.Abstractions.Bindings;
+using MvvmKit.Abstractions.Converters;
 
 namespace MvvmKit.Bindings;
 
-sealed internal class DestinationPropertyBinding<TSource, TSourceProperty, TDestination, TDestinationProperty>
-	: IDestinationPropertyBinding<TSource, TDestination, TDestinationProperty>
+sealed internal class DestinationPropertyBinding<TSource, TDestination, TSourceProperty, TDestinationProperty>
+	: IDestinationPropertyBinding<TSource, TDestination, TSourceProperty, TDestinationProperty>
 	where TSource : INotifyPropertyChanged
 {
 	private readonly TSource source;
@@ -36,7 +37,7 @@ sealed internal class DestinationPropertyBinding<TSource, TSourceProperty, TDest
 	private void SaveBinding()
 	{
 		var weakThis = new WeakReference<
-			DestinationPropertyBinding<TSource, TSourceProperty, TDestination, TDestinationProperty>>(this);
+			DestinationPropertyBinding<TSource, TDestination, TSourceProperty, TDestinationProperty>>(this);
 
 		this.mappings[this.sourcePropertyKey] = () =>
 		{
@@ -45,11 +46,41 @@ sealed internal class DestinationPropertyBinding<TSource, TSourceProperty, TDest
 				return;
 			}
 
-			var target = unwrappedWeakThis.sourceProperty.Compile().Invoke(unwrappedWeakThis.source);
+			var sourceValue = unwrappedWeakThis.sourceProperty.Compile().Invoke(unwrappedWeakThis.source);
 
 			var body = Expression.Assign(
 				unwrappedWeakThis.destinationProperty.Body,
-				Expression.Constant(target, target?.GetType() ?? typeof(TSourceProperty)));
+				Expression.Constant(sourceValue, typeof(TDestinationProperty)));
+
+			var lambda = Expression.Lambda<Action<TDestination>>(body, unwrappedWeakThis.destinationProperty.Parameters);
+
+			var action = lambda.Compile();
+
+			action.Invoke(unwrappedWeakThis.destination);
+		};
+	}
+
+	public void WithConversion<TConverter>() where TConverter : IValueConverter<TSourceProperty, TDestinationProperty>, new()
+	{
+		var weakThis = new WeakReference<
+			DestinationPropertyBinding<TSource, TDestination, TSourceProperty, TDestinationProperty>>(this);
+
+		this.mappings[this.sourcePropertyKey] = () =>
+		{
+			if (!weakThis.TryGetTarget(out var unwrappedWeakThis))
+			{
+				return;
+			}
+
+			var sourceValueUnconverted = unwrappedWeakThis.sourceProperty.Compile().Invoke(unwrappedWeakThis.source);
+
+			var valueConverter = new TConverter();
+
+			var convertedSourceValue = valueConverter.Convert(sourceValueUnconverted);
+
+			var body = Expression.Assign(
+				unwrappedWeakThis.destinationProperty.Body,
+				Expression.Constant(convertedSourceValue, typeof(TDestinationProperty)));
 
 			var lambda = Expression.Lambda<Action<TDestination>>(body, unwrappedWeakThis.destinationProperty.Parameters);
 
