@@ -23,6 +23,7 @@ public abstract class NavigationViewModel<TParameter> : NavigationViewModel, IVi
 
 	public abstract void Prepare(TParameter parameter);
 }
+
 public abstract class NavigationViewModel<TParameter, TResult> : NavigationViewModelResult<TResult>,
 	IViewModel<TParameter, TResult>
 	where TParameter : class

@@ -1,8 +1,9 @@
 ﻿using MvvmKit.Abstractions.ViewModels;
+using MvvmKit.Bindings;
 
 namespace MvvmKit.ViewModels;
 
-public abstract class ViewModel : IViewModel
+public abstract class ViewModel : Bindable, IViewModel
 {
 	public virtual void ViewCreated()
 	{

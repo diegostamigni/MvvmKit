@@ -36,57 +36,45 @@ sealed internal class DestinationPropertyBinding<TSource, TDestination, TSourceP
 
 	private void SaveBinding()
 	{
-		var weakThis = new WeakReference<
-			DestinationPropertyBinding<TSource, TDestination, TSourceProperty, TDestinationProperty>>(this);
-
 		this.mappings[this.sourcePropertyKey] = () =>
 		{
-			if (!weakThis.TryGetTarget(out var unwrappedWeakThis))
-			{
-				return;
-			}
-
-			var sourceValue = unwrappedWeakThis.sourceProperty.Compile().Invoke(unwrappedWeakThis.source);
+			var sourceValue = this.sourceProperty
+				.Compile()
+				.Invoke(this.source);
 
 			var body = Expression.Assign(
-				unwrappedWeakThis.destinationProperty.Body,
+				this.destinationProperty.Body,
 				Expression.Constant(sourceValue, typeof(TDestinationProperty)));
 
-			var lambda = Expression.Lambda<Action<TDestination>>(body, unwrappedWeakThis.destinationProperty.Parameters);
+			var lambda = Expression.Lambda<Action<TDestination>>(body, this.destinationProperty.Parameters);
 
 			var action = lambda.Compile();
 
-			action.Invoke(unwrappedWeakThis.destination);
+			action.Invoke(this.destination);
 		};
 	}
 
 	public void WithConversion<TConverter>() where TConverter : IValueConverter<TSourceProperty, TDestinationProperty>, new()
 	{
-		var weakThis = new WeakReference<
-			DestinationPropertyBinding<TSource, TDestination, TSourceProperty, TDestinationProperty>>(this);
-
 		this.mappings[this.sourcePropertyKey] = () =>
 		{
-			if (!weakThis.TryGetTarget(out var unwrappedWeakThis))
-			{
-				return;
-			}
-
-			var sourceValueUnconverted = unwrappedWeakThis.sourceProperty.Compile().Invoke(unwrappedWeakThis.source);
+			var sourceValueUnconverted = this.sourceProperty
+				.Compile()
+				.Invoke(this.source);
 
 			var valueConverter = new TConverter();
 
 			var convertedSourceValue = valueConverter.Convert(sourceValueUnconverted);
 
 			var body = Expression.Assign(
-				unwrappedWeakThis.destinationProperty.Body,
+				this.destinationProperty.Body,
 				Expression.Constant(convertedSourceValue, typeof(TDestinationProperty)));
 
-			var lambda = Expression.Lambda<Action<TDestination>>(body, unwrappedWeakThis.destinationProperty.Parameters);
+			var lambda = Expression.Lambda<Action<TDestination>>(body, this.destinationProperty.Parameters);
 
 			var action = lambda.Compile();
 
-			action.Invoke(unwrappedWeakThis.destination);
+			action.Invoke(this.destination);
 		};
 	}
 }
