@@ -10,7 +10,7 @@ public static class PresentationAttributeExtensions
 		this IDictionary<Type, PresentationAttributeAction> attributeTypesToActionsDictionary,
 		Func<Type, TPresentationAttribute, ViewModelRequest, Task<bool>> showAction,
 		Func<IViewModel, TPresentationAttribute, Task<bool>> closeAction)
-		where TPresentationAttribute : class, IPresentationAttribute
+		where TPresentationAttribute : class, IPresentation
 	{
 		attributeTypesToActionsDictionary.Add(
 			typeof(TPresentationAttribute),

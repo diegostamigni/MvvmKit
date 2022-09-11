@@ -39,13 +39,13 @@ public abstract class AttributeViewPresenter : ViewPresenter, IAttributeViewPres
 
 	public virtual BasePresentationAttribute? GetOverridePresentationAttribute(ViewModelRequest request, Type viewType)
 	{
-		var hasInterface = viewType.GetInterfaces().Contains(typeof(IOverridePresentationAttribute));
+		var hasInterface = viewType.GetInterfaces().Contains(typeof(IOverridePresentation));
 		if (!hasInterface)
 		{
 			return null;
 		}
 
-		var viewInstance = CreateOverridePresentationAttributeViewInstance(viewType) as IOverridePresentationAttribute;
+		var viewInstance = CreateOverridePresentationAttributeViewInstance(viewType) as IOverridePresentation;
 		try
 		{
 			var presentationAttribute = viewInstance?.PresentationAttribute(request);

@@ -46,8 +46,8 @@ public class AsyncCommand : AsyncCommandBase, IAsyncCommand
 
 	public Task ExecuteAsync(object? parameter = null) => ExecuteAsync(parameter, false);
 }
-public class AsyncCommand<T>
-	: AsyncCommandBase, ICommand, IAsyncCommand<T>
+
+public class AsyncCommand<T> : AsyncCommandBase, ICommand, IAsyncCommand<T>
 {
 	private readonly Func<T, CancellationToken, Task> execute;
 	private readonly Func<T, bool>? canExecute;
