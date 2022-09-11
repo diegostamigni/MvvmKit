@@ -8,5 +8,6 @@ public interface IBinding<TSource, TDestination>
 {
 	void Apply();
 
-	ISourcePropertyBinding<TSource, TDestination> For<TProperty>(Expression<Func<TSource, TProperty>> sourceProperty);
+	ISourcePropertyBinding<TSource, TDestination, TSourceProperty> For<TSourceProperty>(
+		Expression<Func<TSource, TSourceProperty>> sourceProperty);
 }

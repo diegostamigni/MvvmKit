@@ -5,19 +5,14 @@ using MvvmKit.Abstractions.Bindings;
 
 namespace MvvmKit.Bindings;
 
-[SuppressMessage("Design", "CA1000:Do not declare static members on generic types")]
-public class Binding<TSource, TDestination> :
-	IBinding<TSource, TDestination>,
-	ISourcePropertyBinding<TSource, TDestination>,
-	IDestinationPropertyBinding<TSource, TDestination> where TSource : INotifyPropertyChanged
+public sealed class Binding<TSource, TDestination> : IBinding<TSource, TDestination>
+	where TSource : INotifyPropertyChanged
 {
 	private readonly TSource source;
 	private readonly TDestination destination;
 	private readonly Dictionary<string, Action> mappings = new();
 
-	private object? tmpSourceProperty;
-
-	protected Binding(TSource source, TDestination destination)
+	private Binding(TSource source, TDestination destination)
 	{
 		this.source = source;
 		this.destination = destination;
@@ -25,6 +20,7 @@ public class Binding<TSource, TDestination> :
 		source.PropertyChanged += SourceOnPropertyChanged;
 	}
 
+	[SuppressMessage("Design", "CA1000:Do not declare static members on generic types")]
 	public static IBinding<TSource, TDestination> Create(TSource source, TDestination view)
 		=> new Binding<TSource, TDestination>(source, view);
 
@@ -36,56 +32,17 @@ public class Binding<TSource, TDestination> :
 		}
 	}
 
-	public ISourcePropertyBinding<TSource, TDestination> For<TProperty>(
-		Expression<Func<TSource, TProperty>> sourceProperty)
+	public ISourcePropertyBinding<TSource, TDestination, TSourceProperty> For<TSourceProperty>(
+		Expression<Func<TSource, TSourceProperty>> sourceProperty)
 	{
-		this.tmpSourceProperty = sourceProperty;
+		var propertyBinding = new SourcePropertyBinding<TSource, TDestination, TSourceProperty>(
+			this.source,
+			this.destination,
+			sourceProperty,
+			GetKey(sourceProperty),
+			this.mappings);
 
-		return this;
-	}
-
-	public IDestinationPropertyBinding<TSource, TDestination> To<TProperty>(
-		Expression<Func<TDestination, TProperty>> destinationProperty)
-	{
-		if (this.tmpSourceProperty is not Expression<Func<TSource, TProperty>> sourceProperty)
-		{
-			throw new InvalidOperationException("Source property is not set");
-		}
-
-		SaveBinding(sourceProperty, destinationProperty);
-
-		this.tmpSourceProperty = null;
-
-		return this;
-	}
-
-	private void SaveBinding<TProperty>(
-		Expression<Func<TSource, TProperty>> sourceProperty,
-		Expression<Func<TDestination, TProperty>> destinationProperty)
-	{
-		var key = GetKey(sourceProperty);
-
-		var weakThis = new WeakReference<Binding<TSource, TDestination>>(this);
-
-		this.mappings[key] = () =>
-		{
-			if (!weakThis.TryGetTarget(out var unwrappedWeakThis))
-			{
-				return;
-			}
-
-			var target = sourceProperty.Compile().Invoke(unwrappedWeakThis.source);
-
-			var body = Expression.Assign(
-				destinationProperty.Body,
-				Expression.Constant(target, target?.GetType() ?? typeof(TProperty)));
-
-			var lambda = Expression.Lambda<Action<TDestination>>(body, destinationProperty.Parameters);
-
-			var action = lambda.Compile();
-
-			action.Invoke(unwrappedWeakThis.destination);
-		};
+		return propertyBinding;
 	}
 
 	private static string GetKey<TProperty>(Expression<Func<TSource,TProperty>> viewModelProperty)
