@@ -1,18 +1,23 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
+using MvvmKit.Abstractions.Bindings;
 
 namespace MvvmKit.Bindings;
 
 [SuppressMessage("Design", "CA1000:Do not declare static members on generic types")]
-public class Binding<TSource, TDestination> where TSource : INotifyPropertyChanged
+public class Binding<TSource, TDestination> :
+	IBinding<TSource, TDestination>,
+	ISourcePropertyBinding<TSource, TDestination>,
+	IDestinationPropertyBinding<TSource, TDestination> where TSource : INotifyPropertyChanged
 {
 	private readonly TSource source;
 	private readonly TDestination destination;
-
 	private readonly Dictionary<string, Action> mappings = new();
 
-	private Binding(TSource source, TDestination destination)
+	private object? tmpSourceProperty;
+
+	protected Binding(TSource source, TDestination destination)
 	{
 		this.source = source;
 		this.destination = destination;
@@ -20,28 +25,8 @@ public class Binding<TSource, TDestination> where TSource : INotifyPropertyChang
 		source.PropertyChanged += SourceOnPropertyChanged;
 	}
 
-	public static Binding<TSource, TDestination> Create(TSource source, TDestination view) => new(source, view);
-
-	public void Bind<TProperty>(
-		Expression<Func<TSource, TProperty>> viewModelProperty,
-		Expression<Func<TDestination, TProperty>> viewProperty)
-	{
-		var weakThis = new WeakReference<Binding<TSource, TDestination>>(this);
-		var key = GetKey(viewModelProperty);
-		this.mappings.Add(key, () =>
-		{
-			if (!weakThis.TryGetTarget(out var unwrappedWeakThis))
-			{
-				return;
-			}
-
-			var target = viewModelProperty.Compile().Invoke(unwrappedWeakThis.source);
-			var body = Expression.Assign(viewProperty.Body, Expression.Constant(target, target?.GetType() ?? typeof(TProperty)));
-			var lambda = Expression.Lambda<Action<TDestination>>(body, viewProperty.Parameters);
-			var action = lambda.Compile();
-			action.Invoke(unwrappedWeakThis.destination);
-		});
-	}
+	public static IBinding<TSource, TDestination> Create(TSource source, TDestination view)
+		=> new Binding<TSource, TDestination>(source, view);
 
 	public void Apply()
 	{
@@ -49,6 +34,58 @@ public class Binding<TSource, TDestination> where TSource : INotifyPropertyChang
 		{
 			action.Invoke();
 		}
+	}
+
+	public ISourcePropertyBinding<TSource, TDestination> For<TProperty>(
+		Expression<Func<TSource, TProperty>> sourceProperty)
+	{
+		this.tmpSourceProperty = sourceProperty;
+
+		return this;
+	}
+
+	public IDestinationPropertyBinding<TSource, TDestination> To<TProperty>(
+		Expression<Func<TDestination, TProperty>> destinationProperty)
+	{
+		if (this.tmpSourceProperty is not Expression<Func<TSource, TProperty>> sourceProperty)
+		{
+			throw new InvalidOperationException("Source property is not set");
+		}
+
+		SaveBinding(sourceProperty, destinationProperty);
+
+		this.tmpSourceProperty = null;
+
+		return this;
+	}
+
+	private void SaveBinding<TProperty>(
+		Expression<Func<TSource, TProperty>> sourceProperty,
+		Expression<Func<TDestination, TProperty>> destinationProperty)
+	{
+		var key = GetKey(sourceProperty);
+
+		var weakThis = new WeakReference<Binding<TSource, TDestination>>(this);
+
+		this.mappings[key] = () =>
+		{
+			if (!weakThis.TryGetTarget(out var unwrappedWeakThis))
+			{
+				return;
+			}
+
+			var target = sourceProperty.Compile().Invoke(unwrappedWeakThis.source);
+
+			var body = Expression.Assign(
+				destinationProperty.Body,
+				Expression.Constant(target, target?.GetType() ?? typeof(TProperty)));
+
+			var lambda = Expression.Lambda<Action<TDestination>>(body, destinationProperty.Parameters);
+
+			var action = lambda.Compile();
+
+			action.Invoke(unwrappedWeakThis.destination);
+		};
 	}
 
 	private static string GetKey<TProperty>(Expression<Func<TSource,TProperty>> viewModelProperty)

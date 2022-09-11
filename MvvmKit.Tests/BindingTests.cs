@@ -20,7 +20,7 @@ public class BindingTests
 		var destination = new Destination();
 
 		var bindings = Binding<Source, Destination>.Create(source, destination);
-		bindings.Bind(vm => vm.Name, v => v.Name);
+		bindings.For(vm => vm.Name).To(v => v.Name);
 		bindings.Apply();
 
 		destination.Name.ShouldBe("Test");
@@ -37,7 +37,7 @@ public class BindingTests
 		var destination = new Destination();
 
 		var bindings = Binding<Source, Destination>.Create(source, destination);
-		bindings.Bind(vm => vm.Name, v => v.Name);
+		bindings.For(vm => vm.Name).To(v => v.Name);
 
 		source.Name = "Update";
 		destination.Name.ShouldBe("Update");
@@ -54,7 +54,7 @@ public class BindingTests
 		var destination = new Destination();
 
 		var bindings = Binding<Source, Destination>.Create(source, destination);
-		bindings.Bind(vm => vm.Name, v => v.Name);
+		bindings.For(vm => vm.Name).To(v => v.Name);
 		bindings.Apply();
 
 		source.Name = "Update";
@@ -73,8 +73,8 @@ public class BindingTests
 		var destination = new Destination();
 
 		var bindings = Binding<Source, Destination>.Create(source, destination);
-		bindings.Bind(vm => vm.Name, v => v.Name);
-		bindings.Bind(vm => vm.Command, v => v.Command);
+		bindings.For(vm => vm.Name).To(v => v.Name);
+		bindings.For(vm => vm.Command).To(v => v.Command);
 		bindings.Apply();
 
 		destination.Command?.Execute();

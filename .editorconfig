@@ -163,6 +163,7 @@ tab_width = 4
 dotnet_diagnostic.CA1010.severity = none
 dotnet_diagnostic.CA1711.severity = none
 dotnet_diagnostic.CS0067.severity = none
+dotnet_diagnostic.CA1716.severity = none
 
 [**[Tt]ests.cs]
 dotnet_diagnostic.CA1707.severity = none
