@@ -14,7 +14,7 @@ public abstract class ViewsContainer : IViewsContainer
 		this.secondaryViewFinders = new();
 	}
 
-	public void AddAll(IDictionary<Type, Type> viewModelViewLookup)
+	public virtual void AddAll(IDictionary<Type, Type> viewModelViewLookup)
 	{
 		foreach (var pair in viewModelViewLookup)
 		{
@@ -22,19 +22,19 @@ public abstract class ViewsContainer : IViewsContainer
 		}
 	}
 
-	public void Add(Type viewModelType, Type viewType)
+	public virtual void Add(Type viewModelType, Type viewType)
 	{
 		this.bindingMap[viewModelType] = viewType;
 	}
 
-	public void Add<TViewModel, TView>()
+	public virtual void Add<TViewModel, TView>()
 		where TViewModel : IViewModel
 		where TView : IView
 	{
 		Add(typeof(TViewModel), typeof(TView));
 	}
 
-	public Type GetViewType(Type? viewModelType)
+	public virtual Type GetViewType(Type? viewModelType)
 	{
 		if (viewModelType is not null && this.bindingMap.TryGetValue(viewModelType, out var binding))
 		{
