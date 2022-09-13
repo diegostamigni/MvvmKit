@@ -28,7 +28,7 @@ steps:
   inputs:
     command: 'custom'
     custom: 'workload'
-    arguments: 'install ios'
+    arguments: 'restore'
 
 - task: Bash@3
   displayName: Set Xcode version to $(xcodeVersion)
