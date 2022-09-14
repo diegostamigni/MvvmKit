@@ -14,11 +14,9 @@ public abstract class IosSetup : Setup, IIosSetup
 		containerBuilder.RegisterAssemblyTypes(typeof(IosSetup).Assembly)
 			.Where(x => RegistrationHelper.RegistrationSuffixes
 				.Any(y => x.Name.EndsWith(y, StringComparison.InvariantCultureIgnoreCase)))
-			.Except<IosViewsContainer>()
-			.Except<IosViewPresenter>()
 			.AsImplementedInterfaces();
 
-		containerBuilder.RegisterType<IosViewPresenter>()
+		containerBuilder.RegisterType<NavigationControllerViewPresenter>()
 			.AsImplementedInterfaces()
 			.SingleInstance();
 

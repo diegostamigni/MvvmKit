@@ -6,4 +6,3 @@ public interface IViewDispatcher : IMainThreadAsyncDispatcher
 {
 	Task<bool> ShowViewModelAsync(ViewModelRequest request);
 }
-
