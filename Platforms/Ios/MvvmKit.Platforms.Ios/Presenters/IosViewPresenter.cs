@@ -15,9 +15,16 @@ public class IosViewPresenter : AttributeViewPresenter, IIosViewPresenter
 
 	private UINavigationController? masterNavigationController;
 
-	// This will not work with scene delegates and multiple windows
 	[SuppressMessage("Performance", "CA1822:Mark members as static")]
-	private UIWindow Window => UIApplication.SharedApplication.Delegate.GetWindow();
+	private UIWindow Window => UIApplication.SharedApplication.ConnectedScenes
+		.Cast<UIScene>()
+		.Where(x =>
+			x is UIWindowScene &&
+			x.ActivationState is UISceneActivationState.ForegroundActive
+				or UISceneActivationState.ForegroundInactive)
+		.Select(x => x as UIWindowScene)
+		.SelectMany(x => x!.Windows)
+		.FirstOrDefault(x => x.IsKeyWindow) ?? UIApplication.SharedApplication.Delegate.GetWindow();
 
 	public IosViewPresenter(
 		IViewsContainer viewsContainer,
