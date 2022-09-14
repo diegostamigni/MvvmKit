@@ -10,6 +10,8 @@ public class IosViewPresenterResolver : IViewPresenterResolver
 	private readonly ILifetimeScope lifetimeScope;
 	private readonly IAttributeViewPresenterHelper attributeViewPresenterHelper;
 
+	private BasePresentationAttribute? currentPresentationAttribute;
+
 	public IosViewPresenterResolver(
 		ILifetimeScope lifetimeScope,
 		IAttributeViewPresenterHelper attributeViewPresenterHelper)
@@ -20,14 +22,31 @@ public class IosViewPresenterResolver : IViewPresenterResolver
 
 	public IViewPresenter Resolve(ViewModelRequest request)
 	{
-		var attribute = this.attributeViewPresenterHelper.GetPresentationAttribute(request);
-
-		return attribute switch
+		if (this.currentPresentationAttribute is not null)
 		{
-			RootPresentationAttribute or ChildPresentationAttribute
-				=> this.lifetimeScope.Resolve<INavigationControllerViewPresenter>(),
+			return GetViewPresenter(this.currentPresentationAttribute);
+		}
 
-			_ => throw new NotSupportedException($"Presentation attribute {attribute.GetType().Name} is not supported")
+		var attribute = this.attributeViewPresenterHelper.GetPresentationAttribute(request);
+		if (attribute is not null and not ChildPresentationAttribute)
+		{
+			this.currentPresentationAttribute = attribute;
+		}
+
+		return GetViewPresenter(attribute);
+	}
+
+	private IViewPresenter GetViewPresenter<TPresentationAttribute>(TPresentationAttribute? presentationAttribute)
+		where TPresentationAttribute : BasePresentationAttribute
+	{
+		return presentationAttribute switch
+		{
+			NavigationPresentationAttribute => this.lifetimeScope.Resolve<INavigationControllerViewPresenter>(),
+			SplitViewPresentationAttribute => this.lifetimeScope.Resolve<ISplitViewControllerViewPresenter>(),
+			ModalPresentationAttribute => this.lifetimeScope.Resolve<IModalViewControllerViewPresenter>(),
+			TabPresentationAttribute => this.lifetimeScope.Resolve<ITabBarViewControllerViewPresenter>(),
+			_ => throw new NotSupportedException(
+				$"Presentation attribute {presentationAttribute?.GetType().Name} is not supported")
 		};
 	}
 }

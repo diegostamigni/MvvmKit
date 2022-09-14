@@ -11,5 +11,6 @@ public static class RegistrationHelper
 		"Manager",
 		"Resolver",
 		"Helper",
+		"Presenter"
 	};
 }

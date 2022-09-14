@@ -4,8 +4,7 @@ namespace MvvmKit.Platforms.Ios.Abstractions.Presenters;
 
 public class ChildPresentationAttribute : BasePresentationAttribute
 {
-	public const bool DefaultAnimated = true;
-	public bool Animated { get; set; } = DefaultAnimated;
+	public bool Animated { get; set; } = true;
 
 	public ChildPresentationAttribute(Type viewModelType) : base(viewModelType)
 	{

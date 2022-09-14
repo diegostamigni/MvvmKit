@@ -9,9 +9,7 @@ public class IosViewDispatcher : IosUIThreadDispatcher, IViewDispatcher
 	private readonly IViewPresenterResolver viewPresenterResolver;
 
 	public IosViewDispatcher(IViewPresenterResolver viewPresenterResolver)
-	{
-		this.viewPresenterResolver = viewPresenterResolver;
-	}
+		=> this.viewPresenterResolver = viewPresenterResolver;
 
 	public async Task<bool> ShowViewModelAsync(ViewModelRequest request)
 	{

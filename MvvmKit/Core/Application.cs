@@ -13,7 +13,8 @@ public abstract class Application : IApplication
 		containerBuilder.RegisterAssemblyTypes(typeof(Application).Assembly)
 			.Where(x => RegistrationHelper.RegistrationSuffixes
 				.Any(y => x.Name.EndsWith(y, StringComparison.InvariantCultureIgnoreCase)))
-			.AsImplementedInterfaces();
+			.AsImplementedInterfaces()
+			.SingleInstance();
 
 		containerBuilder.RegisterModule(new ViewModelModule(GetType()));
 	}
