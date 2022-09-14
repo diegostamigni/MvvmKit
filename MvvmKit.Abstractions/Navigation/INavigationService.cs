@@ -58,7 +58,7 @@ public interface INavigationService
 	/// <returns></returns>
 	Task<TResult?> NavigateAsync<TResult>(
 		IViewModelResult<TResult> viewModel,
-		CancellationToken cancellationToken = default) where TResult : class;
+		CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Navigates to an instance of a ViewModel passes TParameter and returns TResult
@@ -73,8 +73,7 @@ public interface INavigationService
 		IViewModel<TParameter, TResult> viewModel,
 		TParameter param,
 		CancellationToken cancellationToken = default)
-		where TParameter : notnull
-		where TResult : class;
+		where TParameter : notnull;
 
 	/// <summary>
 	/// Navigates to a ViewModel Type
@@ -105,8 +104,7 @@ public interface INavigationService
 	/// <param name="viewModelType"></param>
 	/// <param name="cancellationToken">CancellationToken to cancel the navigation</param>
 	/// <returns></returns>
-	Task<TResult?> NavigateAsync<TResult>(Type viewModelType, CancellationToken cancellationToken = default)
-		where TResult : class;
+	Task<TResult?> NavigateAsync<TResult>(Type viewModelType, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Navigates to a ViewModel Type passes TParameter and returns TResult
@@ -121,8 +119,7 @@ public interface INavigationService
 		Type viewModelType,
 		TParameter param,
 		CancellationToken cancellationToken = default)
-		where TParameter : notnull
-		where TResult : class;
+		where TParameter : notnull;
 
 	/// <summary>
 	/// Navigate to a ViewModel determined by its type
@@ -153,8 +150,7 @@ public interface INavigationService
 	/// <typeparam name="TResult">Result from the ViewModel</typeparam>
 	/// <returns>Returns a <see cref="Task{Task}"/> with <see cref="TResult"/></returns>
 	Task<TResult?> NavigateAsync<TViewModel, TResult>(CancellationToken cancellationToken = default)
-		where TViewModel : IViewModelResult<TResult>
-		where TResult : class;
+		where TViewModel : IViewModelResult<TResult>;
 
 	/// <summary>
 	/// Navigate to a ViewModel determined by its type, with parameter and which returns a result.
@@ -169,8 +165,7 @@ public interface INavigationService
 		TParameter param,
 		CancellationToken cancellationToken = default)
 		where TViewModel : IViewModel<TParameter, TResult>
-		where TParameter : notnull
-		where TResult : class;
+		where TParameter : notnull;
 
 	/// <summary>
 	/// Verifies if the provided viewmodel is available
@@ -201,7 +196,8 @@ public interface INavigationService
 	/// <param name="result"></param>
 	/// <param name="cancellationToken"></param>
 	/// <returns></returns>
-	Task<bool> CloseAsync<TResult>(IViewModelResult<TResult> viewModel, TResult? result,
-		CancellationToken cancellationToken = default)
-		where TResult : class;
+	Task<bool> CloseAsync<TResult>(
+		IViewModelResult<TResult> viewModel,
+		TResult? result,
+		CancellationToken cancellationToken = default);
 }

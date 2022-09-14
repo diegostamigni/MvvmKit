@@ -14,6 +14,8 @@ public interface IViewModel
 
 	void ViewDestroy(bool viewFinishing = true);
 
+	void Start();
+
 	void Prepare();
 
 	Task InitializeAsync();

@@ -57,8 +57,6 @@ public class NavigationControllerViewPresenter : ViewPresenter, INavigationContr
 		UIViewController controller,
 		RootPresentationAttribute? attribute = null)
 	{
-		RemoveWindowSubviews();
-
 		if (attribute is null || attribute.AnimationOptions == UIViewAnimationOptions.TransitionNone)
 		{
 			this.Window.RootViewController = controller;
@@ -88,14 +86,6 @@ public class NavigationControllerViewPresenter : ViewPresenter, INavigationContr
 		this.masterNavigationController = null;
 	}
 
-	protected void RemoveWindowSubviews()
-	{
-		foreach (var v in this.Window.Subviews)
-		{
-			v.RemoveFromSuperview();
-		}
-	}
-
 	public override Task<bool> ShowAsync(ViewModelRequest request)
 	{
 		var presentationAttribute = this.attributeViewPresenterHelper.GetPresentationAttribute(request);
@@ -104,16 +94,15 @@ public class NavigationControllerViewPresenter : ViewPresenter, INavigationContr
 
 		return presentationAttribute switch
 		{
-			RootPresentationAttribute rootAttribute => ShowRootViewControllerAsync(view, rootAttribute, request),
-			ChildPresentationAttribute childAttribute => ShowChildViewControllerAsync(view, childAttribute, request),
+			RootPresentationAttribute rootAttribute => ShowRootViewControllerAsync(view, rootAttribute),
+			ChildPresentationAttribute childAttribute => ShowChildViewControllerAsync(view, childAttribute),
 			_ => throw new NotSupportedException($"Presentation attribute {presentationAttribute.GetType().Name} is not supported in this context")
 		};
 	}
 
 	protected virtual Task<bool> ShowRootViewControllerAsync(
 		UIViewController viewController,
-		RootPresentationAttribute attribute,
-		ViewModelRequest request)
+		RootPresentationAttribute attribute)
 	{
 		SetupWindowRootNavigation(viewController, attribute);
 		return Task.FromResult(true);
@@ -121,25 +110,16 @@ public class NavigationControllerViewPresenter : ViewPresenter, INavigationContr
 
 	protected virtual Task<bool> ShowChildViewControllerAsync(
 		UIViewController viewController,
-		ChildPresentationAttribute attribute,
-		ViewModelRequest request)
+		ChildPresentationAttribute attribute)
 	{
 		if (this.masterNavigationController is not null)
 		{
-			PushViewControllerIntoStack(this.masterNavigationController, viewController, attribute);
+			this.masterNavigationController.PushViewController(viewController, attribute.Animated);
 			return Task.FromResult(true);
 		}
 
 		throw new InvalidOperationException(
 			$"Trying to show View type: {viewController.GetType().Name} as child, but there is no current stack!");
-	}
-
-	protected virtual void PushViewControllerIntoStack(
-		UINavigationController navigationController,
-		UIViewController viewController,
-		ChildPresentationAttribute attribute)
-	{
-		navigationController.PushViewController(viewController, attribute.Animated);
 	}
 
 	public override Task<bool> CloseAsync(IViewModel viewModel)
@@ -158,22 +138,27 @@ public class NavigationControllerViewPresenter : ViewPresenter, INavigationContr
 
 	private bool CloseChildViewController(IViewModel viewModel, ChildPresentationAttribute attribute)
 	{
+		if (this.masterNavigationController is null)
+		{
+			return false;
+		}
+
 		// check for top view controller
-		var topView = this.masterNavigationController?.TopViewController;
+		var topView = this.masterNavigationController.TopViewController;
 
 		if (topView is IIosView iosView && iosView.ViewModel == viewModel)
 		{
-			this.masterNavigationController?.PopViewController(attribute.Animated);
+			this.masterNavigationController.PopViewController(attribute.Animated);
 
 			return true;
 		}
 
 		// loop through stack
-		var controllers = this.masterNavigationController?.ViewControllers?.ToList() ?? new();
+		var controllers = this.masterNavigationController.ViewControllers?.ToList() ?? new();
 
-		var controllerToClose = controllers.Find(vc => vc is IIosView iView && iView.ViewModel == viewModel);
+		var controllerToClose = controllers.SingleOrDefault(vc => vc is IIosView iView && iView.ViewModel == viewModel);
 
-		if (controllerToClose is not null && this.masterNavigationController is not null)
+		if (controllerToClose is not null)
 		{
 			controllers.Remove(controllerToClose);
 
