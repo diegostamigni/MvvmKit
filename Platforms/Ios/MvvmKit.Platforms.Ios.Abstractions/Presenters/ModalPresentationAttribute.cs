@@ -2,6 +2,7 @@ using MvvmKit.Abstractions.Presenters;
 
 namespace MvvmKit.Platforms.Ios.Abstractions.Presenters;
 
+[ViewPresenter(typeof(IModalViewControllerViewPresenter))]
 public class ModalPresentationAttribute : BasePresentationAttribute
 {
 	public bool WrapInNavigationController { get; set; }

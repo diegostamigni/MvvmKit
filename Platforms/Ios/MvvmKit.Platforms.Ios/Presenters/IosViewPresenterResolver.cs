@@ -1,7 +1,7 @@
+using System.Reflection;
 using Autofac;
 using MvvmKit.Abstractions.Presenters;
 using MvvmKit.Abstractions.View;
-using MvvmKit.Platforms.Ios.Abstractions.Presenters;
 
 namespace MvvmKit.Platforms.Ios.Presenters;
 
@@ -10,7 +10,7 @@ public class IosViewPresenterResolver : IViewPresenterResolver
 	private readonly ILifetimeScope lifetimeScope;
 	private readonly IAttributeViewPresenterHelper attributeViewPresenterHelper;
 
-	private BasePresentationAttribute? currentPresentationAttribute;
+	private IViewPresenter? currentPresenter;
 
 	public IosViewPresenterResolver(
 		ILifetimeScope lifetimeScope,
@@ -22,31 +22,31 @@ public class IosViewPresenterResolver : IViewPresenterResolver
 
 	public IViewPresenter Resolve(ViewModelRequest request)
 	{
-		if (this.currentPresentationAttribute is not null)
+		if (this.currentPresenter is not null)
 		{
-			return GetViewPresenter(this.currentPresentationAttribute);
+			return this.currentPresenter;
 		}
 
 		var attribute = this.attributeViewPresenterHelper.GetPresentationAttribute(request);
-		if (attribute is not null and not ChildPresentationAttribute)
-		{
-			this.currentPresentationAttribute = attribute;
-		}
 
-		return GetViewPresenter(attribute);
+		var presenter = GetViewPresenter(attribute);
+
+		this.currentPresenter = presenter ?? throw new InvalidOperationException(
+			$"No valid presenter found for {request.ViewModelType} with attribute {attribute}");
+
+		return presenter;
 	}
 
-	private IViewPresenter GetViewPresenter<TPresentationAttribute>(TPresentationAttribute? presentationAttribute)
+	private IViewPresenter? GetViewPresenter<TPresentationAttribute>(TPresentationAttribute? presentationAttribute)
 		where TPresentationAttribute : BasePresentationAttribute
 	{
-		return presentationAttribute switch
+		var presenterAttr = presentationAttribute?.GetType().GetCustomAttribute<ViewPresenterAttribute>();
+
+		if (presenterAttr is null)
 		{
-			NavigationPresentationAttribute => this.lifetimeScope.Resolve<INavigationControllerViewPresenter>(),
-			SplitViewPresentationAttribute => this.lifetimeScope.Resolve<ISplitViewControllerViewPresenter>(),
-			ModalPresentationAttribute => this.lifetimeScope.Resolve<IModalViewControllerViewPresenter>(),
-			TabPresentationAttribute => this.lifetimeScope.Resolve<ITabBarViewControllerViewPresenter>(),
-			_ => throw new NotSupportedException(
-				$"Presentation attribute {presentationAttribute?.GetType().Name} is not supported")
-		};
+			return null;
+		}
+
+		return this.lifetimeScope.Resolve(presenterAttr.PresenterType) as IViewPresenter;
 	}
 }

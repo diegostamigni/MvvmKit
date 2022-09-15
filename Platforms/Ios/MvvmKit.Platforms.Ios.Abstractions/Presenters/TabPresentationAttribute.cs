@@ -2,6 +2,7 @@ using MvvmKit.Abstractions.Presenters;
 
 namespace MvvmKit.Platforms.Ios.Abstractions.Presenters;
 
+[ViewPresenter(typeof(ITabBarViewControllerViewPresenter))]
 public class TabPresentationAttribute : BasePresentationAttribute
 {
 	public string? TabName { get; set; }

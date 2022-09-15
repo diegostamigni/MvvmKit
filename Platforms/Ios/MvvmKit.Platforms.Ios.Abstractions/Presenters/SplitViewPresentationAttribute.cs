@@ -3,6 +3,7 @@ using MvvmKit.Enums;
 
 namespace MvvmKit.Platforms.Ios.Abstractions.Presenters;
 
+[ViewPresenter(typeof(ISplitViewControllerViewPresenter))]
 public class SplitViewPresentationAttribute : BasePresentationAttribute
 {
 	public bool WrapInNavigationController { get; set; } = true;

@@ -2,6 +2,7 @@ using MvvmKit.Abstractions.Presenters;
 
 namespace MvvmKit.Platforms.Ios.Abstractions.Presenters;
 
+[ViewPresenter(typeof(INavigationControllerViewPresenter))]
 public class NavigationPresentationAttribute : BasePresentationAttribute
 {
 	public float AnimationDuration { get; set; } = 1.0f;
