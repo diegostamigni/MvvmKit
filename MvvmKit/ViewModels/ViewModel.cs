@@ -29,6 +29,10 @@ public abstract class ViewModel : Bindable, IViewModel
 	{
 	}
 
+	public virtual void Start()
+	{
+	}
+
 	public virtual void Prepare()
 	{
 	}

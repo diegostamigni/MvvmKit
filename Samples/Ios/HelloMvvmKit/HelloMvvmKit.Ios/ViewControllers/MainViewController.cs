@@ -6,7 +6,7 @@ using MvvmKit.Platforms.Ios.Views;
 
 namespace HelloMvvmKit.Ios.ViewControllers;
 
-[RootPresentation(typeof(HomeViewModel), WrapInNavigationController = true)]
+[NavigationPresentation(typeof(HomeViewModel), WrapInNavigationController = true)]
 public class MainViewController : ViewController<HomeViewModel>
 {
 	private readonly UIImageView imageView = new();

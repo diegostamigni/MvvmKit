@@ -9,7 +9,8 @@ public static class RegistrationHelper
 		"Loader",
 		"Dispatcher",
 		"Manager",
-		"Container",
+		"Resolver",
+		"Helper",
 		"Presenter"
 	};
 }

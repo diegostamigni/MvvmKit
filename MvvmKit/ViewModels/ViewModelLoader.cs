@@ -23,7 +23,10 @@ public class ViewModelLoader : IViewModelLoader
 			throw new ArgumentNullException(nameof(request), $"{nameof(request.ViewModelType)} is null");
 		}
 
-		var viewModel = (IViewModel) this.lifetimeScope.Resolve(request.ViewModelType);
+		var viewModel = (IViewModel)this.lifetimeScope.Resolve(request.ViewModelType);
+
+		RunViewModelLifecycle(viewModel, navigationArgs);
+
 		return viewModel;
 	}
 
@@ -50,5 +53,63 @@ public class ViewModelLoader : IViewModelLoader
 		NavigateArgs? navigationArgs = null)
 	{
 		throw new NotImplementedException();
+	}
+
+	private static void RunViewModelLifecycle(IViewModel viewModel, NavigateArgs? navigationArgs)
+	{
+		if (viewModel == null)
+		{
+			throw new ArgumentNullException(nameof(viewModel));
+		}
+
+		try
+		{
+			viewModel.Start();
+			if (navigationArgs?.Cancel == true)
+			{
+				return;
+			}
+
+			viewModel.Prepare();
+		}
+		catch (Exception exception)
+		{
+			throw new InvalidOperationException(
+				$"Problem running viewModel lifecycle of type {viewModel.GetType().Name}", exception);
+		}
+	}
+
+	private static void RunViewModelLifecycle<TParameter>(
+		IViewModel<TParameter> viewModel,
+		TParameter param,
+		NavigateArgs? navigationArgs)
+		where TParameter : notnull
+	{
+		if (viewModel == null)
+		{
+			throw new ArgumentNullException(nameof(viewModel));
+		}
+
+		try
+		{
+			viewModel.Start();
+			if (navigationArgs?.Cancel == true)
+			{
+				return;
+			}
+
+			viewModel.Prepare();
+			if (navigationArgs?.Cancel == true)
+			{
+				return;
+			}
+
+			viewModel.Prepare(param);
+		}
+		catch (Exception exception)
+		{
+			throw new InvalidOperationException(
+				$"Problem running viewModel lifecycle of type {viewModel.GetType().Name}", exception);
+		}
 	}
 }
