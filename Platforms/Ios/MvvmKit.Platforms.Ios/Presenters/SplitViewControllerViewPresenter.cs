@@ -1,12 +1,22 @@
-using MvvmKit.Abstractions.View;
+using MvvmKit.Abstractions.Presenters;
 using MvvmKit.Abstractions.ViewModels;
 using MvvmKit.Platforms.Ios.Abstractions.Presenters;
+using MvvmKit.Platforms.Ios.Abstractions.Views;
 
 namespace MvvmKit.Platforms.Ios.Presenters;
 
-public class SplitViewControllerViewPresenter : ViewControllerViewPresenter, ISplitViewControllerViewPresenter
+public class SplitViewControllerViewPresenter
+	: ViewControllerViewPresenter<SplitViewPresentationAttribute>, ISplitViewControllerViewPresenter
 {
-	public override Task<bool> ShowAsync(ViewModelRequest request) => throw new NotImplementedException();
+	public SplitViewControllerViewPresenter(
+		IIosViewCreator viewCreator,
+		IAttributeViewPresenterHelper attributeViewPresenterHelper) : base(viewCreator, attributeViewPresenterHelper)
+	{
+	}
 
-	public override Task<bool> CloseAsync(IViewModel viewModel) => throw new NotImplementedException();
+	protected override Task<bool> HandleShowAsync(UIViewController view, SplitViewPresentationAttribute presentationAttribute)
+		=> throw new NotImplementedException();
+
+	protected override Task<bool> HandleCloseAsync(IViewModel viewModel, SplitViewPresentationAttribute presentationAttribute)
+		=> throw new NotImplementedException();
 }

@@ -3,7 +3,7 @@ using MvvmKit.Abstractions.Presenters;
 namespace MvvmKit.Platforms.Ios.Abstractions.Presenters;
 
 [ViewPresenter(typeof(ITabBarViewControllerViewPresenter))]
-public class TabPresentationAttribute : BasePresentationAttribute
+public class TabPresentationAttribute : BasePresentationAttribute, IHasWrapInNavigationController
 {
 	public string? TabName { get; set; }
 
@@ -11,8 +11,7 @@ public class TabPresentationAttribute : BasePresentationAttribute
 
 	public string? TabSelectedIconName { get; set; }
 
-	public const bool DefaultWrapInNavigationController = true;
-	public bool WrapInNavigationController { get; set; } = DefaultWrapInNavigationController;
+	public bool WrapInNavigationController { get; set; } = true;
 
 	public string? TabAccessibilityIdentifier { get; set; }
 

@@ -1,12 +1,22 @@
-using MvvmKit.Abstractions.View;
+using MvvmKit.Abstractions.Presenters;
 using MvvmKit.Abstractions.ViewModels;
 using MvvmKit.Platforms.Ios.Abstractions.Presenters;
+using MvvmKit.Platforms.Ios.Abstractions.Views;
 
 namespace MvvmKit.Platforms.Ios.Presenters;
 
-public class ModalViewControllerViewPresenter : ViewControllerViewPresenter, IModalViewControllerViewPresenter
+public class ModalViewControllerViewPresenter
+	: ViewControllerViewPresenter<ModalPresentationAttribute>, IModalViewControllerViewPresenter
 {
-	public override Task<bool> ShowAsync(ViewModelRequest request) => throw new NotImplementedException();
+	public ModalViewControllerViewPresenter(
+		IIosViewCreator viewCreator,
+		IAttributeViewPresenterHelper attributeViewPresenterHelper) : base(viewCreator, attributeViewPresenterHelper)
+	{
+	}
 
-	public override Task<bool> CloseAsync(IViewModel viewModel) => throw new NotImplementedException();
+	protected override Task<bool> HandleShowAsync(UIViewController view, ModalPresentationAttribute presentationAttribute)
+		=> throw new NotImplementedException();
+
+	protected override Task<bool> HandleCloseAsync(IViewModel viewModel, ModalPresentationAttribute presentationAttribute)
+		=> throw new NotImplementedException();
 }

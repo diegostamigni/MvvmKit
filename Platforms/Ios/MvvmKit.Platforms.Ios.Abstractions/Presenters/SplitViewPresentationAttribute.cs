@@ -4,7 +4,7 @@ using MvvmKit.Enums;
 namespace MvvmKit.Platforms.Ios.Abstractions.Presenters;
 
 [ViewPresenter(typeof(ISplitViewControllerViewPresenter))]
-public class SplitViewPresentationAttribute : BasePresentationAttribute
+public class SplitViewPresentationAttribute : BasePresentationAttribute, IHasWrapInNavigationController
 {
 	public bool WrapInNavigationController { get; set; } = true;
 
